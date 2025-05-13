@@ -5,7 +5,6 @@ int main(int argc, char const *argv[])
 {
     while (true)
     {
-
         std::string src;
         std::cout << std::endl;
         std::cout << "> ";
@@ -27,7 +26,7 @@ int main(int argc, char const *argv[])
             {
                 std::cout << "OpenParen";
             }
-            else if (tk.type == TokenType::NumericLiteral)
+            else if (tk.type == TokenType::Number)
             {
                 std::cout << "NumericLiteral";
             }

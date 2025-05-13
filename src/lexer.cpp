@@ -1,7 +1,5 @@
 #include "lexer.h"
 
-// Ensure the function implementation matches the declaration in the header file
-
 std::vector<Token> tokenize(std::string sourceCode)
 {
     std::vector<Token> tokens;
@@ -10,45 +8,44 @@ std::vector<Token> tokenize(std::string sourceCode)
     // Weird way to back trackingly get tokens
     while (!src.empty())
     {
-        char current = src.front();
-        if (current == '(')
+        if (src.front() == '(')
         {
-            tokens.push_back(createToken(TokenType::OpenParen, std::string(1, current)));
+            tokens.push_back(createToken(TokenType::OpenParen, std::string(1, src.front())));
             src.erase(src.begin()); // Just like pop but with no return
         }
-        else if (current == ')')
+        else if (src.front() == ')')
         {
-            tokens.push_back(createToken(TokenType::CloseParen, std::string(1, current)));
+            tokens.push_back(createToken(TokenType::CloseParen, std::string(1, src.front())));
             src.erase(src.begin());
         }
-        else if (current == '+' || current == '-' || current == '*' || current == '/')
+        else if (src.front() == '+' || src.front() == '-' || src.front() == '*' || src.front() == '/')
         {
-            tokens.push_back(createToken(TokenType::BinaryOperator, std::string(1, current)));
+            tokens.push_back(createToken(TokenType::BinaryOperator, std::string(1, src.front())));
             src.erase(src.begin());
         }
-        else if (current == '=')
+        else if (src.front() == '=')
         {
-            tokens.push_back(createToken(TokenType::Equals, std::string(1, current)));
+            tokens.push_back(createToken(TokenType::Equals, std::string(1, src.front())));
             src.erase(src.begin());
         }
         else
         {
-            if (std::isdigit(current))
+            if (std::isdigit(src.front()))
             {
                 std::string num = "";
-                while (std::isdigit(current) && !src.empty())
+                while (!src.empty() && std::isdigit(src.front()))
                 {
-                    num.append(std::string(1, current));
+                    num.append(std::string(1, src.front()));
                     src.erase(src.begin());
                 }
-                tokens.push_back(createToken(TokenType::NumericLiteral, num));
+                tokens.push_back(createToken(TokenType::Number, num));
             }
-            else if (std::isalpha(current) && !src.empty())
+            else if (std::isalpha(src.front()))
             {
                 std::string ident = "";
-                while (std::isalpha(current))
+                while (!src.empty() && std::isalpha(src.front()))
                 {
-                    ident.append(std::string(1, current));
+                    ident += src.front();
                     src.erase(src.begin());
                 }
 

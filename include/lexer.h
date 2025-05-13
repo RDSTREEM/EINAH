@@ -1,3 +1,4 @@
+#pragma once
 #ifndef LEXER_H
 #define LEXER_H
 
@@ -8,7 +9,7 @@
 enum class TokenType
 {
     Identifier,
-    NumericLiteral,
+    Number,
     Equals,
     OpenParen,
     CloseParen,
@@ -23,7 +24,7 @@ struct Token
     std::string value;
 };
 
-std::unordered_map<std::string, TokenType> KEYWORDS = {{"let", TokenType::Let}};
+const inline std::unordered_map<std::string, TokenType> KEYWORDS = {{"let", TokenType::Let}};
 
 std::vector<Token> tokenize(std::string sourceCode);
 
