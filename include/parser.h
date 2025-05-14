@@ -1,8 +1,7 @@
-#pragma once
-#ifndef LEXER_H
-#define LEXER_H
+#ifndef PARSER_H
+#define PARSER_H
 
-#include "lexer.h"
+#include "lexer.h" // Ensure this includes lexer.h correctly.
 #include "ast.h"
 
 class Parser
