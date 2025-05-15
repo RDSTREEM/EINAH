@@ -3,13 +3,14 @@
 
 #include <vector>
 #include <string>
+#include <memory>
 
-enum NodeType
+enum class NodeType
 {
-    PROGRAM,
-    BINARYEXPR,
-    IDENTIFIER,
-    NUMERIC_LIT
+    Program,
+    BinaryExpr,
+    Identifier,
+    NumericLiteral
 };
 
 struct Stmt
@@ -22,28 +23,28 @@ struct Expr : Stmt
 };
 struct Program : Stmt
 {
-    std::vector<Stmt *> body;
-    Program() { kind = PROGRAM; }
+    std::vector<std::shared_ptr<Stmt>> body;
+    Program() { kind = NodeType::Program; }
 };
 
 struct BinaryExpr : Expr
 {
-    Expr *left;
-    Expr *right;
+    std::shared_ptr<Expr> left;
+    std::shared_ptr<Expr> right;
     std::string op;
-    BinaryExpr() { kind = BINARYEXPR; }
+    BinaryExpr() { kind = NodeType::BinaryExpr; }
 };
 
 struct Identifier : Expr
 {
     std::string symbol;
-    Identifier() { kind = IDENTIFIER; };
+    Identifier() { kind = NodeType::Identifier; };
 };
 
 struct NumericLiteral : Expr
 {
     double value;
-    NumericLiteral() { kind = NUMERIC_LIT; };
+    NumericLiteral() { kind = NodeType::NumericLiteral; };
 };
 
 #endif

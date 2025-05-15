@@ -1,7 +1,106 @@
+#include "parser.h"
 #include <iostream>
+
+void printIndent(int indent)
+{
+    for (int i = 0; i < indent; ++i)
+        std::cout << "  ";
+}
+
+void printExpr(const std::shared_ptr<Expr> &expr, int indent)
+{
+    if (!expr)
+    {
+        printIndent(indent);
+        std::cout << "null expr\n";
+        return;
+    }
+
+    switch (expr->kind)
+    {
+    case NodeType::Identifier:
+    {
+        auto id = std::static_pointer_cast<Identifier>(expr);
+        printIndent(indent);
+        std::cout << "Identifier: " << id->symbol << "\n";
+        break;
+    }
+    case NodeType::NumericLiteral:
+    {
+        auto num = std::static_pointer_cast<NumericLiteral>(expr);
+        printIndent(indent);
+        std::cout << "NumericLiteral: " << num->value << "\n";
+        break;
+    }
+    case NodeType::BinaryExpr:
+    {
+        auto bin = std::static_pointer_cast<BinaryExpr>(expr);
+        printIndent(indent);
+        std::cout << "BinaryExpr (operator: " << bin->op << "):\n";
+        printExpr(bin->left, indent + 1);
+        printExpr(bin->right, indent + 1);
+        break;
+    }
+    default:
+        printIndent(indent);
+        std::cout << "Unknown Expr node type\n";
+        break;
+    }
+}
+
+void printStmt(const std::shared_ptr<Stmt> &stmt, int indent = 0)
+{
+    if (!stmt)
+    {
+        printIndent(indent);
+        std::cout << "null stmt\n";
+        return;
+    }
+    printExpr(std::static_pointer_cast<Expr>(stmt), indent);
+}
+
+void printProgram(const std::shared_ptr<Program> &program)
+{
+    if (!program)
+    {
+        std::cout << "Empty program\n";
+        return;
+    }
+
+    std::cout << "Program AST:\n";
+    for (const auto &stmt : program->body)
+    {
+        printStmt(stmt, 1);
+    }
+}
+void repl()
+{
+    Parser parser;
+    std::cout << "Welcome to EINAH";
+
+    while (true)
+    {
+        std::string input;
+        std::cout << "> ";
+
+        if (!std::getline(std::cin, input))
+        {
+            break;
+        }
+
+        if (input.empty() || input.find("exit") != std::string::npos)
+        {
+            std::cout << "Exiting...\n";
+            break;
+        }
+
+        std::shared_ptr<Program> program = parser.produceAST(input);
+        printProgram(program);
+    }
+}
 
 int main(int argc, char const *argv[])
 {
-    std::cout << "Welcome to EINAH";
+    repl();
     return 0;
 }

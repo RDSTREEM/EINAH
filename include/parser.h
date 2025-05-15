@@ -3,25 +3,24 @@
 
 #include "lexer.h" // Ensure this includes lexer.h correctly.
 #include "ast.h"
+#include <cstdlib>
+#include <memory>
 
 class Parser
 {
 private:
     std::vector<Token> tokens;
-    int current;
-
     bool notEOF();
+
     Token at();
     Token eat();
-    Token expect(TokenType type, const std::string &errorMessage);
 
-    Expr *parseAdditiveExpr();
-    Expr *parseMultiplicativeExpr();
-    Expr *parsePrimaryExpr();
+    std::shared_ptr<Stmt> parseStmt();
+    std::shared_ptr<Expr> parseExpr();
+    std::shared_ptr<Expr> parsePrimaryExpr();
 
 public:
-    Parser(const std::vector<Token> &toks);
-    Expr *parseExpression();
+    std::shared_ptr<Program> produceAST(const std::string &sourceCode);
 };
 
 #endif
