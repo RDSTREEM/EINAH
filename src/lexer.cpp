@@ -1,4 +1,6 @@
 #include "lexer.h"
+#include <iostream>
+#include <cstdlib>
 
 std::vector<Token> tokenize(std::string sourceCode)
 {
@@ -18,7 +20,7 @@ std::vector<Token> tokenize(std::string sourceCode)
             tokens.push_back(createToken(TokenType::CloseParen, std::string(1, src.front())));
             src.erase(src.begin());
         }
-        else if (src.front() == '+' || src.front() == '-' || src.front() == '*' || src.front() == '/')
+        else if (src.front() == '+' || src.front() == '-' || src.front() == '*' || src.front() == '/' || src.front() == '%')
         {
             tokens.push_back(createToken(TokenType::BinaryOperator, std::string(1, src.front())));
             src.erase(src.begin());
@@ -59,8 +61,14 @@ std::vector<Token> tokenize(std::string sourceCode)
                     tokens.push_back(createToken(reserved->second, ident));
                 }
             }
+            else if (isSkippable(src.front()))
+            {
+                src.erase(src.begin());
+            }
             else
             {
+                std::cerr << "Unreconized character found in source: " << src.front();
+                exit(1);
             }
         }
     }

@@ -3,6 +3,6 @@
 
 #include <string>
 
-inline bool isSkippable(char c);
+bool isSkippable(char c);
 
 #endif

@@ -76,7 +76,7 @@ void printProgram(const std::shared_ptr<Program> &program)
 void repl()
 {
     Parser parser;
-    std::cout << "Welcome to EINAH";
+    std::cout << "EINAH v0.1" << std::endl;
 
     while (true)
     {

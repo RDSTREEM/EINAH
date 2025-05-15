@@ -7,6 +7,32 @@ std::ostream &operator<<(std::ostream &os, const Token &token)
     return os;
 }
 
+#include <iostream>
+#include "lexer.h" // or wherever TokenType is defined
+
+std::ostream &operator<<(std::ostream &os, TokenType type)
+{
+    switch (type)
+    {
+    case TokenType::OpenParen:
+        return os << "OpenParen";
+    case TokenType::CloseParen:
+        return os << "CloseParen";
+    case TokenType::BinaryOperator:
+        return os << "BinaryOperator";
+    case TokenType::Equals:
+        return os << "Equals";
+    case TokenType::Number:
+        return os << "Number";
+    case TokenType::Identifier:
+        return os << "Identifier";
+    case TokenType::EOFTk:
+        return os << "EOF";
+    default:
+        return os << "UnknownTokenType";
+    }
+}
+
 bool Parser::notEOF()
 {
     return !(at().type == TokenType::EOFTk);
@@ -33,7 +59,7 @@ std::shared_ptr<Stmt> Parser::parseStmt()
 
 std::shared_ptr<Expr> Parser::parseExpr()
 {
-    return parsePrimaryExpr();
+    return parseAdditiveExpr();
 }
 
 std::shared_ptr<Expr> Parser::parsePrimaryExpr()
@@ -60,6 +86,13 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         ident->value = std::stod(token.value);
         return ident;
     }
+    case TokenType::OpenParen:
+    {
+        eat();
+        auto value = parseExpr();
+        expect(TokenType::CloseParen, "Expected Closing Parenthesis");
+        return value;
+    }
 
     default:
         std::cerr << "Unexpected token token found during parsing: " << at();
@@ -79,5 +112,63 @@ Token Parser::eat()
         return Token{TokenType::EOFTk, ""};
     Token prev = tokens[0];
     tokens.erase(tokens.begin());
+    return prev;
+}
+
+std::shared_ptr<Expr> Parser::parseAdditiveExpr()
+{
+    auto left = parseMultiplicativeExpr();
+
+    while (at().value == "+" || at().value == "-")
+    {
+        std::string op = eat().value;
+        auto right = parseMultiplicativeExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+
+        binop->kind = NodeType::BinaryExpr;
+        binop->right = right;
+        binop->left = left;
+        binop->op = op;
+
+        left = binop;
+    }
+
+    return left;
+}
+
+std::shared_ptr<Expr> Parser::parseMultiplicativeExpr()
+{
+    auto left = parsePrimaryExpr();
+
+    while (at().value == "/" || at().value == "*" || at().value == "%")
+    {
+        std::string op = eat().value;
+        auto right = parsePrimaryExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+
+        binop->kind = NodeType::BinaryExpr;
+        binop->right = right;
+        binop->left = left;
+        binop->op = op;
+
+        left = binop;
+    }
+
+    return left;
+}
+
+Token Parser::expect(TokenType type_, const std::string &err)
+{
+    if (tokens.empty())
+        return Token{TokenType::EOFTk, ""};
+    Token prev = tokens[0];
+    tokens.erase(tokens.begin());
+    if (prev.type != type_)
+    {
+        std::cerr << "Parser Error:" << std::endl
+                  << err << "" << prev << "- Expecting: " << type_;
+        exit(1);
+    }
+
     return prev;
 }
