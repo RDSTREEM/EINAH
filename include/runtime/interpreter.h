@@ -4,19 +4,9 @@
 #include "runtime/values.h"
 #include "frontend/ast.h"
 
-std::shared_ptr<RuntimeVal> evalue(std::shared_ptr<Stmt> astNode)
-{
-    switch (astNode->kind)
-    {
-    case NodeType::NumericLiteral:
-    {
-        std::shared_ptr<NumericLiteral> numNode = std::static_pointer_cast<NumericLiteral>(astNode);
-        return std::make_shared<NumberVal>(numNode->value);
-    }
-
-    default:
-        return std::make_shared<NullVal>();
-    }
-}
+std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode);
+std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop);
+std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program);
+std::shared_ptr<NumberVal> evaluateNumericBinaryExpr(std::shared_ptr<NumberVal> lhs, std::shared_ptr<NumberVal> rhs, std::string &op);
 
 #endif
