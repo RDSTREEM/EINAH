@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "frontend/parser.h"
 #include <iostream>
 
 std::ostream &operator<<(std::ostream &os, const Token &token)
@@ -6,9 +6,6 @@ std::ostream &operator<<(std::ostream &os, const Token &token)
     os << "Token(Type: " << static_cast<int>(token.type) << ", Value: \"" << token.value << "\")";
     return os;
 }
-
-#include <iostream>
-#include "lexer.h" // or wherever TokenType is defined
 
 std::ostream &operator<<(std::ostream &os, TokenType type)
 {
@@ -81,10 +78,17 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
     {
 
         Token token = eat();
-        auto ident = std::make_shared<NumericLiteral>();
-        ident->kind = NodeType::NumericLiteral;
-        ident->value = std::stod(token.value);
-        return ident;
+        auto num = std::make_shared<NumericLiteral>();
+        num->kind = NodeType::NumericLiteral;
+        num->value = std::stod(token.value);
+        return num;
+    }
+    case TokenType::Null:
+    {
+        eat();
+        auto null = std::make_shared<NullLiteral>();
+        null->kind = NodeType::NullLiteral;
+        return null;
     }
     case TokenType::OpenParen:
     {

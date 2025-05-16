@@ -1,27 +1,31 @@
-CXX = g++
-CXXFLAGS = -std=c++17 -Wall -Iinclude
+CXX := g++
+CXXFLAGS := -std=c++17 -Wall -Iinclude -mconsole
 
-SRC_DIR = src
-OBJ_DIR = build/obj
-EXEC_DIR = build
-EXEC = $(EXEC_DIR)/interpreter
+SRC_DIR := src
+OBJ_DIR := build/obj
+BIN := build/einah
 
-SOURCES = $(wildcard $(SRC_DIR)/*.cpp)
-OBJECTS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SOURCES))
+SRC := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp)
+OBJ := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
 
-$(EXEC): $(OBJECTS)
-	@if not exist $(EXEC_DIR) mkdir $(EXEC_DIR)
-	$(CXX) $(CXXFLAGS) -o $(EXEC) $(OBJECTS)
+$(BIN): $(OBJ)
+	@mkdir $(dir $@) 2>NUL || exit 0
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJ)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@if not exist $(OBJ_DIR) mkdir $(OBJ_DIR)
+	@mkdir $(dir $@) 2>NUL || exit 0
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	@if exist $(OBJ_DIR) rmdir /s /q $(OBJ_DIR)
-	@if exist $(EXEC_DIR) rmdir /s /q $(EXEC_DIR)
+	@rmdir /s /q $(OBJ_DIR) 2>NUL || exit 0
+	@rmdir /s /q $(dir $(BIN)) 2>NUL || exit 0
 
-run: $(EXEC)
-	$(EXEC)
+run: $(BIN)
+	$(BIN)
 
-.PHONY: clean run
+print:
+	@echo Source files: $(SRC)
+	@echo Object files: $(OBJ)
+	@echo Binary: $(BIN)
+
+.PHONY: clean run print

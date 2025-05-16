@@ -1,4 +1,4 @@
-#include "parser.h"
+#include "frontend/parser.h"
 #include <iostream>
 
 void printIndent(int indent)
@@ -39,6 +39,12 @@ void printExpr(const std::shared_ptr<Expr> &expr, int indent)
         std::cout << "BinaryExpr (operator: " << bin->op << "):\n";
         printExpr(bin->left, indent + 1);
         printExpr(bin->right, indent + 1);
+        break;
+    }
+    case NodeType::NullLiteral:
+    {
+        printIndent(indent);
+        std::cout << "NullLiteral\n";
         break;
     }
     default:
