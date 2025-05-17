@@ -1,6 +1,6 @@
 #include "runtime/interpreter.h"
-#include <iostream>
 #include <math.h>
+#include <iostream>
 
 std::ostream &operator<<(std::ostream &os, const NodeType node)
 {
@@ -33,12 +33,13 @@ std::ostream &operator<<(std::ostream &os, const NodeType node)
     }
 
     default:
+        os << "UnkownNodeType";
         break;
     }
     return os;
 }
 
-std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode)
+std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_ptr<Environment> env)
 
 {
     switch (astNode->kind)
@@ -53,16 +54,19 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode)
     {
         return std::make_shared<NullVal>();
     }
-
+    case NodeType::Identifier:
+    {
+        return evalIdentifier(std::static_pointer_cast<Identifier>(astNode), env);
+    }
     case NodeType::BinaryExpr:
     {
         auto biNode = std::static_pointer_cast<BinaryExpr>(astNode);
-        return evaluateBinaryExpr(biNode);
+        return evaluateBinaryExpr(biNode, env);
     }
     case NodeType::Program:
     {
         auto program = std::static_pointer_cast<Program>(astNode);
-        return evaluateProgram(program);
+        return evaluateProgram(program, env);
     }
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << astNode->kind;
@@ -70,10 +74,10 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode)
     }
 }
 
-std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop)
+std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop, std::shared_ptr<Environment> env)
 {
-    std::shared_ptr<RuntimeVal> lhs = evaluate(binop->left);
-    std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right);
+    std::shared_ptr<RuntimeVal> lhs = evaluate(binop->left, env);
+    std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);
 
     if (rhs->_type == ValueType::Number && lhs->_type == ValueType::Number)
     {
@@ -85,13 +89,13 @@ std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop
     return std::make_shared<NullVal>();
 }
 
-std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program)
+std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program, std::shared_ptr<Environment> env)
 {
     std::shared_ptr<RuntimeVal> lastEvaluated = std::make_shared<NullVal>();
 
     for (auto &statement : program->body)
     {
-        lastEvaluated = evaluate(statement);
+        lastEvaluated = evaluate(statement, env);
     }
 
     return lastEvaluated;
@@ -122,4 +126,10 @@ std::shared_ptr<NumberVal> evaluateNumericBinaryExpr(std::shared_ptr<NumberVal> 
     }
 
     return std::make_shared<NumberVal>(result);
+}
+
+std::shared_ptr<RuntimeVal> evalIdentifier(std::shared_ptr<Identifier> ident, std::shared_ptr<Environment> env)
+{
+    auto val = env->lookUp(ident->symbol);
+    return val;
 }

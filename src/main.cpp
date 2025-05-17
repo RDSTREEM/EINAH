@@ -116,6 +116,8 @@ namespace printHelper
 void repl()
 {
     Parser parser;
+    std::shared_ptr<Environment> env;
+    env->declareVar("x", std::make_shared<NumberVal>(100));
     std::cout << "EINAH v0.1" << std::endl;
 
     while (true)
@@ -135,7 +137,7 @@ void repl()
         }
 
         std::shared_ptr<Program> program = parser.produceAST(input);
-        auto result = evaluate(program);
+        auto result = evaluate(program, env);
         printHelper::printRuntimeVal(result);
     }
 }
