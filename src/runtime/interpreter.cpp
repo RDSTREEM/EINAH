@@ -26,11 +26,11 @@ std::ostream &operator<<(std::ostream &os, const NodeType node)
         os << "NumericLiteral";
         break;
     }
-    case NodeType::NullLiteral:
-    {
-        os << "NullLiteral";
-        break;
-    }
+        // case NodeType::NullLiteral:
+        // {
+        //     os << "NullLiteral";
+        //     break;
+        // }
 
     default:
         os << "UnkownNodeType";
@@ -50,10 +50,10 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         return std::make_shared<NumberVal>(numNode->value);
     }
 
-    case NodeType::NullLiteral:
-    {
-        return std::make_shared<NullVal>();
-    }
+    // case NodeType::NullLiteral:
+    // {
+    //     return mkNull();
+    // }
     case NodeType::Identifier:
     {
         return evalIdentifier(std::static_pointer_cast<Identifier>(astNode), env);
@@ -86,12 +86,12 @@ std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop
         return evaluateNumericBinaryExpr(lhsNum, rhsNum, binop->op);
     }
 
-    return std::make_shared<NullVal>();
+    return mkNull();
 }
 
 std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program, std::shared_ptr<Environment> env)
 {
-    std::shared_ptr<RuntimeVal> lastEvaluated = std::make_shared<NullVal>();
+    std::shared_ptr<RuntimeVal> lastEvaluated = mkNull();
 
     for (auto &statement : program->body)
     {
@@ -101,7 +101,7 @@ std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program, st
     return lastEvaluated;
 }
 
-std::shared_ptr<NumberVal> evaluateNumericBinaryExpr(std::shared_ptr<NumberVal> lhs, std::shared_ptr<NumberVal> rhs, std::string &op)
+std::shared_ptr<NumberVal> evaluateNumericBinaryExpr(std::shared_ptr<NumberVal> lhs, std::shared_ptr<NumberVal> rhs, const std::string &op)
 {
     double result = 0;
     if (op == "+")

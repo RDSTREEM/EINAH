@@ -9,16 +9,16 @@ SRC := $(wildcard $(SRC_DIR)/*.cpp) $(wildcard $(SRC_DIR)/*/*.cpp)
 OBJ := $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC))
 
 $(BIN): $(OBJ)
-	@mkdir $(dir $@) 2>NUL || exit 0
+	@powershell -Command "if (!(Test-Path '$(dir $@)')) { New-Item -ItemType Directory -Path '$(dir $@)' }"
 	$(CXX) $(CXXFLAGS) -o $@ $(OBJ)
 
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.cpp
-	@mkdir $(dir $@) 2>NUL || exit 0
+	@powershell -Command "if (!(Test-Path '$(dir $@)')) { New-Item -ItemType Directory -Path '$(dir $@)' -Force }"
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	@rmdir /s /q $(OBJ_DIR) 2>NUL || exit 0
-	@rmdir /s /q $(dir $(BIN)) 2>NUL || exit 0
+	@powershell -Command "if (Test-Path '$(OBJ_DIR)') { Remove-Item -Recurse -Force '$(OBJ_DIR)' }"
+	@powershell -Command "if (Test-Path '$(dir $(BIN))') { Remove-Item -Recurse -Force '$(dir $(BIN))' }"
 
 run: $(BIN)
 	$(BIN)

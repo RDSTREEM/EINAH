@@ -1,7 +1,7 @@
 #include "runtime/environment.h"
 #include <iostream>
 
-std::shared_ptr<RuntimeVal> Environment::declareVar(std::string varName, std::shared_ptr<RuntimeVal> value)
+std::shared_ptr<RuntimeVal> Environment::declareVar(const std::string &varName, std::shared_ptr<RuntimeVal> value)
 {
     if (variables.find(varName) != variables.end())
     {
@@ -11,7 +11,7 @@ std::shared_ptr<RuntimeVal> Environment::declareVar(std::string varName, std::sh
     return value;
 }
 
-std::shared_ptr<RuntimeVal> Environment::assignVar(std::string varName, std::shared_ptr<RuntimeVal> value)
+std::shared_ptr<RuntimeVal> Environment::assignVar(const std::string &varName, std::shared_ptr<RuntimeVal> value)
 {
     auto env = resolve(varName);
     env->variables[varName] = value;
@@ -19,23 +19,24 @@ std::shared_ptr<RuntimeVal> Environment::assignVar(std::string varName, std::sha
     return value;
 }
 
-std::shared_ptr<Environment> Environment::resolve(std::string varName)
+std::shared_ptr<Environment> Environment::resolve(const std::string &varName)
 {
-    if (variables.count(varName))
+    if (variables.find(varName) != variables.end())
     {
-        return shared_from_this();
+        std::shared_ptr<Environment> env = shared_from_this();
+        return env;
     }
 
-    if (!parent)
+    if (parent)
     {
-        throw std::runtime_error("Cannot resolve variable '" + varName + "' as it does not exist.");
+        return parent->resolve(varName);
     }
 
-    return parent->resolve(varName);
+    throw std::runtime_error("Variable not defined: " + varName);
 }
 
-std::shared_ptr<RuntimeVal> Environment::lookUp(std::string varName)
+std::shared_ptr<RuntimeVal> Environment::lookUp(const std::string &varName)
 {
-    auto env = resolve(varName);
+    std::shared_ptr<Environment> env = resolve(varName);
     return env->variables.at(varName);
 }

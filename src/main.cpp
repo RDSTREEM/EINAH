@@ -45,12 +45,12 @@ namespace printHelper
             printExpr(bin->right, indent + 1);
             break;
         }
-        case NodeType::NullLiteral:
-        {
-            printIndent(indent);
-            std::cout << "NullLiteral\n";
-            break;
-        }
+        // case NodeType::NullLiteral:
+        // {
+        //     printIndent(indent);
+        //     std::cout << "NullLiteral\n";
+        //     break;
+        // }
         default:
             printIndent(indent);
             std::cout << "Unknown Expr node type\n";
@@ -116,8 +116,11 @@ namespace printHelper
 void repl()
 {
     Parser parser;
-    std::shared_ptr<Environment> env;
-    env->declareVar("x", std::make_shared<NumberVal>(100));
+    std::shared_ptr<Environment> env = std::make_shared<Environment>();
+    env->declareVar("x", mkNumber(100));
+    env->declareVar("true", mkBool(true));
+    env->declareVar("false", mkBool(false));
+    env->declareVar("null", mkNull());
     std::cout << "EINAH v0.1" << std::endl;
 
     while (true)

@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cstdlib>
 
-std::vector<Token> tokenize(std::string sourceCode)
+std::vector<Token> tokenize(const std::string &sourceCode)
 {
     std::vector<Token> tokens;
     std::vector<char> src(sourceCode.begin(), sourceCode.end());
@@ -13,7 +13,7 @@ std::vector<Token> tokenize(std::string sourceCode)
         if (src.front() == '(')
         {
             tokens.push_back(createToken(TokenType::OpenParen, std::string(1, src.front())));
-            src.erase(src.begin()); // Just like pop but with no return
+            src.erase(src.begin());
         }
         else if (src.front() == ')')
         {
@@ -77,7 +77,7 @@ std::vector<Token> tokenize(std::string sourceCode)
     return tokens;
 }
 
-Token createToken(TokenType type, std::string value)
+Token createToken(TokenType type, const std::string &value)
 {
     return {type, value};
 }

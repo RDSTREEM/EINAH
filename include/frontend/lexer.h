@@ -13,7 +13,7 @@ enum class TokenType
     OpenParen,
     CloseParen,
     BinaryOperator,
-    Null,
+    // Null
     Let,
     EOFTk,
 };
@@ -24,10 +24,12 @@ struct Token
     std::string value;
 };
 
-const inline std::unordered_map<std::string, TokenType> KEYWORDS = {{"let", TokenType::Let}, {"null", TokenType::Null}};
+const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
+    {"let", TokenType::Let},
+};
 
-std::vector<Token> tokenize(std::string sourceCode);
+std::vector<Token> tokenize(const std::string &sourceCode);
 
-Token createToken(TokenType type, std::string value);
+Token createToken(TokenType type, const std::string &value);
 
 #endif
