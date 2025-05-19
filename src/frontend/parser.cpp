@@ -51,7 +51,15 @@ std::shared_ptr<Program> Parser::produceAST(const std::string &sourceCode)
 
 std::shared_ptr<Stmt> Parser::parseStmt()
 {
-    return parseExpr();
+    switch (at().type)
+    {
+    case TokenType::Let:
+    case TokenType::Const:
+        return parseVarDeclaration();
+
+    default:
+        return parseExpr();
+    }
 }
 
 std::shared_ptr<Expr> Parser::parseExpr()
@@ -103,6 +111,32 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         exit(-1);
     }
 }
+
+std::shared_ptr<Stmt> Parser::parseVarDeclaration()
+{
+    const bool isConstant = (eat().type == TokenType::Const);
+    const Token ident = expect(TokenType::Identifier, "Expected identifier name following let|c;onst keywords.");
+
+    if (at().type == TokenType::Semicolon)
+    {
+        eat();
+        if (isConstant)
+            throw std::runtime_error("Must assign value to a constant expression. No value provided.");
+        std::shared_ptr<VarDeclaration> varDeclare = std::make_shared<VarDeclaration>();
+        varDeclare->ident = ident.value;
+        varDeclare->constant = false;
+    }
+
+    expect(TokenType::Equals, "Expected equals token identifier in variable declaration");
+    std::shared_ptr<VarDeclaration> varDeclare = std::make_shared<VarDeclaration>();
+    varDeclare->value = parseExpr();
+    varDeclare->constant = isConstant;
+    varDeclare->ident = ident.value;
+
+    expect(TokenType::Semicolon, "Variable declaration statment must end in a semicolon.");
+    return varDeclare;
+}
+
 Token Parser::at()
 {
     if (tokens.empty())

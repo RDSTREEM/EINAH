@@ -7,6 +7,7 @@
 
 enum class TokenType
 {
+    Semicolon,
     Identifier,
     Number,
     Equals,

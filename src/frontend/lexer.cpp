@@ -30,6 +30,11 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Equals, std::string(1, src.front())));
             src.erase(src.begin());
         }
+        else if (src.front() == ';')
+        {
+            tokens.push_back(createToken(TokenType::Semicolon, std::string(1, src.front())));
+            src.erase(src.begin());
+        }
         else
         {
             if (std::isdigit(src.front()))
