@@ -15,6 +15,7 @@ enum class TokenType
     BinaryOperator,
     // Null
     Let,
+    Const,
     EOFTk,
 };
 
@@ -26,6 +27,7 @@ struct Token
 
 const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"let", TokenType::Let},
+    {"const", TokenType::Const},
 };
 
 std::vector<Token> tokenize(const std::string &sourceCode);

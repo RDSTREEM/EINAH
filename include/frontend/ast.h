@@ -7,7 +7,11 @@
 
 enum class NodeType
 {
+    // ? Statements
     Program,
+    VarDeclaration,
+
+    // ? Expressions
     BinaryExpr,
     Identifier,
     NumericLiteral,
@@ -26,6 +30,14 @@ struct Program : Stmt
 {
     std::vector<std::shared_ptr<Stmt>> body;
     Program() { kind = NodeType::Program; }
+};
+
+struct VarDeclaration : Stmt
+{
+    bool constant;
+    std::string ident;
+    std::shared_ptr<Expr> value;
+    VarDeclaration() { kind = NodeType::VarDeclaration; }
 };
 
 struct BinaryExpr : Expr
