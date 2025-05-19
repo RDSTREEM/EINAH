@@ -115,7 +115,7 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
 std::shared_ptr<Stmt> Parser::parseVarDeclaration()
 {
     const bool isConstant = (eat().type == TokenType::Const);
-    const Token ident = expect(TokenType::Identifier, "Expected identifier name following let|c;onst keywords.");
+    const Token ident = expect(TokenType::Identifier, "Expected identifier name following let|const keywords.");
 
     if (at().type == TokenType::Semicolon)
     {
@@ -125,6 +125,7 @@ std::shared_ptr<Stmt> Parser::parseVarDeclaration()
         std::shared_ptr<VarDeclaration> varDeclare = std::make_shared<VarDeclaration>();
         varDeclare->ident = ident.value;
         varDeclare->constant = false;
+        return varDeclare;
     }
 
     expect(TokenType::Equals, "Expected equals token identifier in variable declaration");
@@ -204,7 +205,8 @@ Token Parser::expect(TokenType type_, const std::string &err)
     if (prev.type != type_)
     {
         std::cerr << "Parser Error:" << std::endl
-                  << err << "" << prev << "- Expecting: " << type_;
+                  << err << std::endl
+                  << prev << "- Expecting: " << type_;
         exit(1);
     }
 
