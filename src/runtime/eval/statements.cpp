@@ -17,5 +17,5 @@ std::shared_ptr<RuntimeVal> evaluateVarDeclaration(std::shared_ptr<VarDeclaratio
 {
     auto value = evaluate(declaration->value, env);
     value = value ? value : mkNull();
-    return env->declareVar(declaration->ident, value);
+    return env->declareVar(declaration->ident, value, declaration->constant);
 }

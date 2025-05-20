@@ -1,19 +1,24 @@
 #include "runtime/environment.h"
 #include <iostream>
 
-std::shared_ptr<RuntimeVal> Environment::declareVar(const std::string &varName, std::shared_ptr<RuntimeVal> value)
+std::shared_ptr<RuntimeVal> Environment::declareVar(const std::string &varName, std::shared_ptr<RuntimeVal> value, bool constant)
 {
     if (variables.find(varName) != variables.end())
     {
         throw std::runtime_error("Cannot declare variable '" + varName + "'. It is already defined.");
     }
     variables[varName] = value;
+
+    if (constant)
+        constants.insert(varName);
     return value;
 }
 
 std::shared_ptr<RuntimeVal> Environment::assignVar(const std::string &varName, std::shared_ptr<RuntimeVal> value)
 {
     auto env = resolve(varName);
+    if (env->constants.find(varName) == env->constants.end())
+        throw std::runtime_error("Cannot reassign to a constant variable: " + varName);
     env->variables[varName] = value;
 
     return value;
