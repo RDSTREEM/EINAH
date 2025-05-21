@@ -17,7 +17,7 @@ std::shared_ptr<RuntimeVal> Environment::declareVar(const std::string &varName, 
 std::shared_ptr<RuntimeVal> Environment::assignVar(const std::string &varName, std::shared_ptr<RuntimeVal> value)
 {
     auto env = resolve(varName);
-    if (env->constants.find(varName) == env->constants.end())
+    if (env->constants.find(varName) != env->constants.end())
         throw std::runtime_error("Cannot reassign to a constant variable: " + varName);
     env->variables[varName] = value;
 

@@ -58,7 +58,7 @@ std::shared_ptr<Stmt> Parser::parseStmt()
         return parseVarDeclaration();
 
     default:
-        return parseExpr();
+        return parseExprStatement();
     }
 }
 
@@ -230,4 +230,15 @@ std::shared_ptr<Expr> Parser::parseAssignmentExpr()
     }
 
     return left;
+}
+
+std::shared_ptr<Stmt> Parser::parseExprStatement()
+{
+    auto expr = parseExpr();
+    expect(TokenType::Semicolon, "Expected Semicolon after statement expression");
+
+    std::shared_ptr<ExprStatement> stmt = std::make_shared<ExprStatement>();
+    stmt->expr = expr;
+
+    return stmt;
 }

@@ -16,6 +16,9 @@ enum class NodeType
     BinaryExpr,
     Identifier,
     NumericLiteral,
+
+    // ? Compiler Only
+    ExprStatement
     // NullLiteral
 };
 
@@ -46,6 +49,12 @@ struct AssignmentExpr : Expr
     std::shared_ptr<Expr> asignee;
     std::shared_ptr<Expr> value;
     AssignmentExpr() { kind = NodeType::AssignmentExpr; }
+};
+
+struct ExprStatement : Stmt
+{
+    std::shared_ptr<Expr> expr;
+    ExprStatement() { kind = NodeType::ExprStatement; }
 };
 
 struct BinaryExpr : Expr
