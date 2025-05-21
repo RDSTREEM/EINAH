@@ -15,7 +15,6 @@ std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program, st
 
 std::shared_ptr<RuntimeVal> evaluateVarDeclaration(std::shared_ptr<VarDeclaration> declaration, std::shared_ptr<Environment> env)
 {
-    auto value = evaluate(declaration->value, env);
-    value = value ? value : mkNull();
+    auto value = declaration->value ? evaluate(declaration->value, env) : mkNull();
     return env->declareVar(declaration->ident, value, declaration->constant);
 }
