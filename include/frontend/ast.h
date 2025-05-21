@@ -10,6 +10,7 @@ enum class NodeType
     // ? Statements
     Program,
     VarDeclaration,
+    AssignmentExpr,
 
     // ? Expressions
     BinaryExpr,
@@ -38,6 +39,13 @@ struct VarDeclaration : Stmt
     std::string ident;
     std::shared_ptr<Expr> value;
     VarDeclaration() { kind = NodeType::VarDeclaration; }
+};
+
+struct AssignmentExpr : Expr
+{
+    std::shared_ptr<Expr> asignee;
+    std::shared_ptr<Expr> value;
+    AssignmentExpr() { kind = NodeType::AssignmentExpr; }
 };
 
 struct BinaryExpr : Expr

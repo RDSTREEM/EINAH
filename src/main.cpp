@@ -117,7 +117,6 @@ void repl()
 {
     Parser parser;
     std::shared_ptr<Environment> env = std::make_shared<Environment>();
-    env->declareVar("x", mkNumber(100), true);
     env->declareVar("true", mkBool(true), true);
     env->declareVar("false", mkBool(false), true);
     env->declareVar("null", mkNull(), true);

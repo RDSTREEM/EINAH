@@ -64,7 +64,8 @@ std::shared_ptr<Stmt> Parser::parseStmt()
 
 std::shared_ptr<Expr> Parser::parseExpr()
 {
-    return parseAdditiveExpr();
+
+    return parseAssignmentExpr();
 }
 
 std::shared_ptr<Expr> Parser::parsePrimaryExpr()
@@ -110,6 +111,8 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         std::cerr << "Unexpected token token found during parsing: " << at();
         exit(-1);
     }
+
+    return nullptr;
 }
 
 std::shared_ptr<Stmt> Parser::parseVarDeclaration()
@@ -211,4 +214,20 @@ Token Parser::expect(TokenType type_, const std::string &err)
     }
 
     return prev;
+}
+
+std::shared_ptr<Expr> Parser::parseAssignmentExpr()
+{
+    auto left = parseAdditiveExpr();
+    if (at().type == TokenType::Equals)
+    {
+        eat();
+        auto right = parseAssignmentExpr();
+        std::shared_ptr<AssignmentExpr> assign = std::make_shared<AssignmentExpr>();
+        assign->asignee = left;
+        assign->value = right;
+        return assign;
+    }
+
+    return left;
 }

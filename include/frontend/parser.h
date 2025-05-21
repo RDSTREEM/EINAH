@@ -18,6 +18,7 @@ private:
 
     std::shared_ptr<Stmt> parseStmt();
     std::shared_ptr<Stmt> parseVarDeclaration();
+    std::shared_ptr<Expr> parseAssignmentExpr();
     std::shared_ptr<Expr> parseExpr();
     std::shared_ptr<Expr> parsePrimaryExpr();
     std::shared_ptr<Expr> parseAdditiveExpr();

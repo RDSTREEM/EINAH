@@ -64,6 +64,11 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         auto biNode = std::static_pointer_cast<BinaryExpr>(astNode);
         return evaluateBinaryExpr(biNode, env);
     }
+    case NodeType::AssignmentExpr:
+    {
+        auto assign = std::static_pointer_cast<AssignmentExpr>(astNode);
+        return evaluateAssignmentExpr(assign, env);
+    }
     case NodeType::Program:
     {
         auto program = std::static_pointer_cast<Program>(astNode);

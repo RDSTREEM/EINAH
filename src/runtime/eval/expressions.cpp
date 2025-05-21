@@ -1,6 +1,7 @@
 #include "runtime/eval/expressions.h"
 #include "runtime/interpreter.h"
 #include <math.h>
+#include <iostream>
 
 std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop, std::shared_ptr<Environment> env)
 {
@@ -48,4 +49,13 @@ std::shared_ptr<RuntimeVal> evaluateIdentifier(std::shared_ptr<Identifier> ident
 {
     auto val = env->lookUp(ident->symbol);
     return val;
+}
+
+std::shared_ptr<RuntimeVal> evaluateAssignmentExpr(std::shared_ptr<AssignmentExpr> node, std::shared_ptr<Environment> env)
+{
+    if (node->asignee->kind != NodeType::Identifier)
+        throw std::runtime_error("Invalid LHS inside the expression");
+
+    const std::string varName = std::static_pointer_cast<Identifier>(node->asignee)->symbol;
+    return env->assignVar(varName, evaluate(node->value, env));
 }
