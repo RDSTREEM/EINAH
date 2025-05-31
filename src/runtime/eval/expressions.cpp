@@ -8,6 +8,17 @@ std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop
     std::shared_ptr<RuntimeVal> lhs = evaluate(binop->left, env);
     std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);
 
+    if (binop->op == "==")
+    {
+        if (lhs->_type == ValueType::Number && rhs->_type == ValueType::Number)
+        {
+            auto lhsNum = std::static_pointer_cast<NumberVal>(lhs);
+            auto rhsNum = std::static_pointer_cast<NumberVal>(rhs);
+            return mkBool(lhsNum->val == rhsNum->val);
+        }
+        return mkBool(false);
+    }
+
     if (rhs->_type == ValueType::Number && lhs->_type == ValueType::Number)
     {
         auto lhsNum = std::static_pointer_cast<NumberVal>(lhs);
