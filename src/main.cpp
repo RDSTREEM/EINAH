@@ -26,7 +26,7 @@ namespace printHelper
         {
             auto id = std::static_pointer_cast<Identifier>(expr);
             printIndent(indent);
-            std::cout << "Identifier: " << id->symbol << "\n";
+            std::cout << "Identifier: '" << id->symbol << "'\n";
             break;
         }
         case NodeType::NumericLiteral:
@@ -40,17 +40,28 @@ namespace printHelper
         {
             auto bin = std::static_pointer_cast<BinaryExpr>(expr);
             printIndent(indent);
-            std::cout << "BinaryExpr (operator: " << bin->op << "):\n";
-            printExpr(bin->left, indent + 1);
-            printExpr(bin->right, indent + 1);
+            std::cout << "BinaryExpr (operator: '" << bin->op << "')\n";
+            printIndent(indent + 1);
+            std::cout << "Left:\n";
+            printExpr(bin->left, indent + 2);
+            printIndent(indent + 1);
+            std::cout << "Right:\n";
+            printExpr(bin->right, indent + 2);
             break;
         }
-        // case NodeType::NullLiteral:
-        // {
-        //     printIndent(indent);
-        //     std::cout << "NullLiteral\n";
-        //     break;
-        // }
+        case NodeType::AssignmentExpr:
+        {
+            auto assign = std::static_pointer_cast<AssignmentExpr>(expr);
+            printIndent(indent);
+            std::cout << "AssignmentExpr\n";
+            printIndent(indent + 1);
+            std::cout << "Asignee:\n";
+            printExpr(assign->asignee, indent + 2);
+            printIndent(indent + 1);
+            std::cout << "Value:\n";
+            printExpr(assign->value, indent + 2);
+            break;
+        }
         default:
             printIndent(indent);
             std::cout << "Unknown Expr node type\n";
@@ -66,7 +77,30 @@ namespace printHelper
             std::cout << "null stmt\n";
             return;
         }
-        printExpr(std::static_pointer_cast<Expr>(stmt), indent);
+        switch (stmt->kind)
+        {
+        case NodeType::VarDeclaration:
+        {
+            auto var = std::static_pointer_cast<VarDeclaration>(stmt);
+            printIndent(indent);
+            std::cout << (var->constant ? "Const " : "Var ") << "Declaration: '" << var->ident << "'\n";
+            printIndent(indent + 1);
+            std::cout << "Value:\n";
+            printExpr(var->value, indent + 2);
+            break;
+        }
+        case NodeType::ExprStatement:
+        {
+            auto exprStmt = std::static_pointer_cast<ExprStatement>(stmt);
+            printIndent(indent);
+            std::cout << "ExprStatement:\n";
+            printExpr(exprStmt->expr, indent + 1);
+            break;
+        }
+        default:
+            printExpr(std::static_pointer_cast<Expr>(stmt), indent);
+            break;
+        }
     }
 
     void printProgram(const std::shared_ptr<Program> &program)
@@ -76,7 +110,6 @@ namespace printHelper
             std::cout << "Empty program\n";
             return;
         }
-
         std::cout << "Program AST:\n";
         for (const auto &stmt : program->body)
         {
@@ -91,13 +124,18 @@ namespace printHelper
             std::cout << "null\n";
             return;
         }
-
         switch (val->_type)
         {
         case ValueType::Number:
         {
             auto num = std::static_pointer_cast<NumberVal>(val);
             std::cout << "{ \"type\": \"number\", \"value\": " << num->val << " }" << std::endl;
+            break;
+        }
+        case ValueType::Boolean:
+        {
+            auto b = std::static_pointer_cast<BooleanVal>(val);
+            std::cout << "{ \"type\": \"boolean\", \"value\": " << (b->val ? "true" : "false") << " }" << std::endl;
             break;
         }
         case ValueType::Null:
