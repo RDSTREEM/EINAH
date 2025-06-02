@@ -7,7 +7,8 @@
 
 enum class TokenType
 {
-    Semicolon,
+    Tilde,     // <-- Add for EINAH statement terminator
+    Semicolon, // (keep for legacy or error reporting)
     Identifier,
     Number,
     Equals,

@@ -119,7 +119,7 @@ std::shared_ptr<Stmt> Parser::parseVarDeclaration()
     const bool isConstant = (eat().type == TokenType::Const);
     const Token ident = expect(TokenType::Identifier, "Expected identifier name following let|const keywords.");
 
-    if (at().type == TokenType::Semicolon)
+    if (at().type == TokenType::Tilde)
     {
         eat();
         if (isConstant)
@@ -136,7 +136,7 @@ std::shared_ptr<Stmt> Parser::parseVarDeclaration()
     varDeclare->constant = isConstant;
     varDeclare->ident = ident.value;
 
-    expect(TokenType::Semicolon, "Variable declaration statment must end in a semicolon.");
+    expect(TokenType::Tilde, "Variable declaration statement must end in a tilde (~).");
     return varDeclare;
 }
 
@@ -234,7 +234,7 @@ std::shared_ptr<Expr> Parser::parseAssignmentExpr()
 std::shared_ptr<Stmt> Parser::parseExprStatement()
 {
     auto expr = parseExpr();
-    expect(TokenType::Semicolon, "Expected Semicolon after statement expression");
+    expect(TokenType::Tilde, "Expected tilde (~) after statement expression");
 
     std::shared_ptr<ExprStatement> stmt = std::make_shared<ExprStatement>();
     stmt->expr = expr;
