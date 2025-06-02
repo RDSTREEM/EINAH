@@ -1,6 +1,7 @@
 #include "frontend/parser.h"
 #include "runtime/interpreter.h"
 #include <iostream>
+#include <magic_enum.hpp>
 
 namespace printHelper
 {
@@ -19,51 +20,52 @@ namespace printHelper
             std::cout << "null expr\n";
             return;
         }
-
+        printIndent(indent);
+        std::cout << "Expr kind: " << magic_enum::enum_name(expr->kind) << "\n";
         switch (expr->kind)
         {
         case NodeType::Identifier:
         {
             auto id = std::static_pointer_cast<Identifier>(expr);
-            printIndent(indent);
+            printIndent(indent + 1);
             std::cout << "Identifier: '" << id->symbol << "'\n";
             break;
         }
         case NodeType::NumericLiteral:
         {
             auto num = std::static_pointer_cast<NumericLiteral>(expr);
-            printIndent(indent);
+            printIndent(indent + 1);
             std::cout << "NumericLiteral: " << num->value << "\n";
             break;
         }
         case NodeType::BinaryExpr:
         {
             auto bin = std::static_pointer_cast<BinaryExpr>(expr);
-            printIndent(indent);
+            printIndent(indent + 1);
             std::cout << "BinaryExpr (operator: '" << bin->op << "')\n";
-            printIndent(indent + 1);
+            printIndent(indent + 2);
             std::cout << "Left:\n";
-            printExpr(bin->left, indent + 2);
-            printIndent(indent + 1);
+            printExpr(bin->left, indent + 3);
+            printIndent(indent + 2);
             std::cout << "Right:\n";
-            printExpr(bin->right, indent + 2);
+            printExpr(bin->right, indent + 3);
             break;
         }
         case NodeType::AssignmentExpr:
         {
             auto assign = std::static_pointer_cast<AssignmentExpr>(expr);
-            printIndent(indent);
+            printIndent(indent + 1);
             std::cout << "AssignmentExpr\n";
-            printIndent(indent + 1);
+            printIndent(indent + 2);
             std::cout << "Asignee:\n";
-            printExpr(assign->asignee, indent + 2);
-            printIndent(indent + 1);
+            printExpr(assign->asignee, indent + 3);
+            printIndent(indent + 2);
             std::cout << "Value:\n";
-            printExpr(assign->value, indent + 2);
+            printExpr(assign->value, indent + 3);
             break;
         }
         default:
-            printIndent(indent);
+            printIndent(indent + 1);
             std::cout << "Unknown Expr node type\n";
             break;
         }
@@ -77,28 +79,30 @@ namespace printHelper
             std::cout << "null stmt\n";
             return;
         }
+        printIndent(indent);
+        std::cout << "Stmt kind: " << magic_enum::enum_name(stmt->kind) << "\n";
         switch (stmt->kind)
         {
         case NodeType::VarDeclaration:
         {
             auto var = std::static_pointer_cast<VarDeclaration>(stmt);
-            printIndent(indent);
-            std::cout << (var->constant ? "Const " : "Var ") << "Declaration: '" << var->ident << "'\n";
             printIndent(indent + 1);
+            std::cout << (var->constant ? "Const " : "Var ") << "Declaration: '" << var->ident << "'\n";
+            printIndent(indent + 2);
             std::cout << "Value:\n";
-            printExpr(var->value, indent + 2);
+            printExpr(var->value, indent + 3);
             break;
         }
         case NodeType::ExprStatement:
         {
             auto exprStmt = std::static_pointer_cast<ExprStatement>(stmt);
-            printIndent(indent);
+            printIndent(indent + 1);
             std::cout << "ExprStatement:\n";
-            printExpr(exprStmt->expr, indent + 1);
+            printExpr(exprStmt->expr, indent + 2);
             break;
         }
         default:
-            printExpr(std::static_pointer_cast<Expr>(stmt), indent);
+            printExpr(std::static_pointer_cast<Expr>(stmt), indent + 1);
             break;
         }
     }
@@ -124,27 +128,28 @@ namespace printHelper
             std::cout << "null\n";
             return;
         }
+        std::cout << "{ \"type\": \"" << magic_enum::enum_name(val->_type) << "\"";
         switch (val->_type)
         {
         case ValueType::Number:
         {
             auto num = std::static_pointer_cast<NumberVal>(val);
-            std::cout << "{ \"type\": \"number\", \"value\": " << num->val << " }" << std::endl;
+            std::cout << ", \"value\": " << num->val << " }" << std::endl;
             break;
         }
         case ValueType::Boolean:
         {
             auto b = std::static_pointer_cast<BooleanVal>(val);
-            std::cout << "{ \"type\": \"boolean\", \"value\": " << (b->val ? "true" : "false") << " }" << std::endl;
+            std::cout << ", \"value\": " << (b->val ? "true" : "false") << " }" << std::endl;
             break;
         }
         case ValueType::Null:
         {
-            std::cout << "{ \"type\": \"null\", \"value\": null }" << std::endl;
+            std::cout << ", \"value\": null }" << std::endl;
             break;
         }
         default:
-            std::cout << "{ \"type\": \"unknown\" }" << std::endl;
+            std::cout << " }" << std::endl;
             break;
         }
     }
