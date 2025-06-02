@@ -27,6 +27,16 @@ std::ostream &operator<<(std::ostream &os, const NodeType node)
         os << "NumericLiteral";
         break;
     }
+    case NodeType::AssignmentExpr:
+    {
+        os << "AssignmentExpr";
+        break;
+    }
+    case NodeType::VarDeclaration:
+    {
+        os << "VarDeclaration";
+        break;
+    }
         // case NodeType::NullLiteral:
         // {
         //     os << "NullLiteral";
@@ -79,8 +89,13 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         auto varDeclare = std::static_pointer_cast<VarDeclaration>(astNode);
         return evaluateVarDeclaration(varDeclare, env);
     }
+    case NodeType::ExprStatement:
+    {
+        auto exprStmt = std::static_pointer_cast<ExprStatement>(astNode);
+        return evaluate(exprStmt, env);
+    }
     default:
-        std::cerr << "This AST Node has not yet been setup for interpretation: " << astNode->kind;
+        std::cerr << "This AST Node has not yet been setup for interpretation: " << typeid(*astNode).name();
         exit(1);
     }
 }

@@ -178,6 +178,7 @@ void repl()
 
         std::shared_ptr<Program> program = parser.produceAST(input);
         auto result = evaluate(program, env);
+        printHelper::printProgram(program);
         printHelper::printRuntimeVal(result);
     }
 }
