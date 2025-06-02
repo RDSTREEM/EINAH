@@ -11,7 +11,12 @@ std::vector<Token> tokenize(const std::string &sourceCode)
     // Weird way to back trackingly get tokens
     while (!src.empty())
     {
-        if (src.front() == '~')
+        if (src.size() >= 2 && src[0] == '~' && src[1] == '~')
+        {
+            tokens.push_back(createToken(TokenType::Eq, "~~"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.front() == '~')
         {
             tokens.push_back(createToken(TokenType::Tilde, "~"));
             src.erase(src.begin());
@@ -38,7 +43,6 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         }
         else if (src.front() == '-')
         {
-            // Check for '->' first (already handled above), so this is just minus
             tokens.push_back(createToken(TokenType::Minus, "-"));
             src.erase(src.begin());
         }
@@ -103,6 +107,19 @@ std::vector<Token> tokenize(const std::string &sourceCode)
                 else
                     tokens.push_back(createToken(reserved->second, ident));
             }
+        }
+        else if (std::isdigit(src.front()))
+        {
+            std::string number = "";
+            bool hasDot = false;
+            while (!src.empty() && (std::isdigit(src.front()) || (!hasDot && src.front() == '.')))
+            {
+                if (src.front() == '.')
+                    hasDot = true;
+                number += src.front();
+                src.erase(src.begin());
+            }
+            tokens.push_back(createToken(TokenType::Number, number));
         }
         else if (isSkippable(src.front()))
         {

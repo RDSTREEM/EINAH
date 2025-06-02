@@ -51,7 +51,7 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
     case NodeType::ExprStatement:
     {
         auto exprStmt = std::static_pointer_cast<ExprStatement>(astNode);
-        return evaluate(exprStmt, env);
+        return evaluate(exprStmt->expr, env);
     }
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << magic_enum::enum_name(astNode->kind) << std::endl;
