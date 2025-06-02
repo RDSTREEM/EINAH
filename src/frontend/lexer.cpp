@@ -1,6 +1,7 @@
 #include "frontend/lexer.h"
 #include <iostream>
 #include <cstdlib>
+#include <third_party/magic_enum.hpp>
 
 std::vector<Token> tokenize(const std::string &sourceCode)
 {
@@ -88,7 +89,7 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             }
             else
             {
-                std::cerr << "Unreconized character found in source: " << src.front();
+                std::cerr << "Unreconized character found in source: " << src.front() << std::endl;
                 exit(1);
             }
         }

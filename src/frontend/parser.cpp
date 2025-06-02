@@ -1,33 +1,11 @@
 #include "frontend/parser.h"
 #include <iostream>
+#include <third_party/magic_enum.hpp>
 
 std::ostream &operator<<(std::ostream &os, const Token &token)
 {
-    os << "Token(Type: " << static_cast<int>(token.type) << ", Value: \"" << token.value << "\")";
+    os << "Token(Type: " << magic_enum::enum_name(token.type) << ", Value: \"" << token.value << "\")";
     return os;
-}
-
-std::ostream &operator<<(std::ostream &os, TokenType type)
-{
-    switch (type)
-    {
-    case TokenType::OpenParen:
-        return os << "OpenParen";
-    case TokenType::CloseParen:
-        return os << "CloseParen";
-    case TokenType::BinaryOperator:
-        return os << "BinaryOperator";
-    case TokenType::Equals:
-        return os << "Equals";
-    case TokenType::Number:
-        return os << "Number";
-    case TokenType::Identifier:
-        return os << "Identifier";
-    case TokenType::EOFTk:
-        return os << "EOF";
-    default:
-        return os << "UnknownTokenType";
-    }
 }
 
 bool Parser::notEOF()
@@ -213,7 +191,7 @@ Token Parser::expect(TokenType type_, const std::string &err)
     {
         std::cerr << "Parser Error:" << std::endl
                   << err << std::endl
-                  << prev << "- Expecting: " << type_;
+                  << prev << "- Expecting: " << magic_enum::enum_name(type_) << std::endl;
         exit(1);
     }
 
