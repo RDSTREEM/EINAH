@@ -11,6 +11,7 @@ enum class TokenType
     Identifier,
     Number,
     Equals,
+    Arrow, // <-- Added for EINAH assignment
     OpenParen,
     CloseParen,
     BinaryOperator,

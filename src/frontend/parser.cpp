@@ -130,7 +130,7 @@ std::shared_ptr<Stmt> Parser::parseVarDeclaration()
         return varDeclare;
     }
 
-    expect(TokenType::Equals, "Expected equals token identifier in variable declaration");
+    expect(TokenType::Arrow, "Expected arrow token (->) after identifier in variable declaration");
     std::shared_ptr<VarDeclaration> varDeclare = std::make_shared<VarDeclaration>();
     varDeclare->value = parseExpr();
     varDeclare->constant = isConstant;
@@ -218,7 +218,7 @@ Token Parser::expect(TokenType type_, const std::string &err)
 std::shared_ptr<Expr> Parser::parseAssignmentExpr()
 {
     auto left = parseAdditiveExpr();
-    if (at().type == TokenType::Equals)
+    if (at().type == TokenType::Arrow)
     {
         eat();
         auto right = parseAssignmentExpr();

@@ -10,7 +10,12 @@ std::vector<Token> tokenize(const std::string &sourceCode)
     // Weird way to back trackingly get tokens
     while (!src.empty())
     {
-        if (src.front() == '(')
+        if (src.size() >= 2 && src[0] == '-' && src[1] == '>')
+        {
+            tokens.push_back(createToken(TokenType::Arrow, "->"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.front() == '(')
         {
             tokens.push_back(createToken(TokenType::OpenParen, std::string(1, src.front())));
             src.erase(src.begin());
