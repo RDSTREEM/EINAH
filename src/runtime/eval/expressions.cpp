@@ -5,27 +5,91 @@
 
 std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop, std::shared_ptr<Environment> env)
 {
-    std::shared_ptr<RuntimeVal> lhs = evaluate(binop->left, env);
-    std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);
-
-    if (binop->op == "==")
+    // Unary NOT
+    if (binop->op == "not")
     {
-        if (lhs->_type == ValueType::Number && rhs->_type == ValueType::Number)
+        std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);
+        if (rhs->_type == ValueType::Boolean)
         {
-            auto lhsNum = std::static_pointer_cast<NumberVal>(lhs);
-            auto rhsNum = std::static_pointer_cast<NumberVal>(rhs);
-            return mkBool(lhsNum->val == rhsNum->val);
+            auto b = std::static_pointer_cast<BooleanVal>(rhs);
+            return mkBool(!b->val);
+        }
+        if (rhs->_type == ValueType::Number)
+        {
+            auto n = std::static_pointer_cast<NumberVal>(rhs);
+            return mkBool(n->val == 0);
         }
         return mkBool(false);
     }
 
-    if (rhs->_type == ValueType::Number && lhs->_type == ValueType::Number)
+    std::shared_ptr<RuntimeVal> lhs = binop->left ? evaluate(binop->left, env) : nullptr;
+    std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);
+
+    if (binop->op == "~~")
+    {
+        if (lhs && rhs && lhs->_type == rhs->_type)
+        {
+            if (lhs->_type == ValueType::Number)
+            {
+                auto l = std::static_pointer_cast<NumberVal>(lhs);
+                auto r = std::static_pointer_cast<NumberVal>(rhs);
+                return mkBool(l->val == r->val);
+            }
+            if (lhs->_type == ValueType::Boolean)
+            {
+                auto l = std::static_pointer_cast<BooleanVal>(lhs);
+                auto r = std::static_pointer_cast<BooleanVal>(rhs);
+                return mkBool(l->val == r->val);
+            }
+        }
+        return mkBool(false);
+    }
+    if (binop->op == "!~")
+    {
+        if (lhs && rhs && lhs->_type == rhs->_type)
+        {
+            if (lhs->_type == ValueType::Number)
+            {
+                auto l = std::static_pointer_cast<NumberVal>(lhs);
+                auto r = std::static_pointer_cast<NumberVal>(rhs);
+                return mkBool(l->val != r->val);
+            }
+            if (lhs->_type == ValueType::Boolean)
+            {
+                auto l = std::static_pointer_cast<BooleanVal>(lhs);
+                auto r = std::static_pointer_cast<BooleanVal>(rhs);
+                return mkBool(l->val != r->val);
+            }
+        }
+        return mkBool(true);
+    }
+    if (binop->op == "and")
+    {
+        if (lhs && rhs && lhs->_type == ValueType::Boolean && rhs->_type == ValueType::Boolean)
+        {
+            auto l = std::static_pointer_cast<BooleanVal>(lhs);
+            auto r = std::static_pointer_cast<BooleanVal>(rhs);
+            return mkBool(l->val && r->val);
+        }
+        return mkBool(false);
+    }
+    if (binop->op == "or")
+    {
+        if (lhs && rhs && lhs->_type == ValueType::Boolean && rhs->_type == ValueType::Boolean)
+        {
+            auto l = std::static_pointer_cast<BooleanVal>(lhs);
+            auto r = std::static_pointer_cast<BooleanVal>(rhs);
+            return mkBool(l->val || r->val);
+        }
+        return mkBool(false);
+    }
+
+    if (rhs && lhs && rhs->_type == ValueType::Number && lhs->_type == ValueType::Number)
     {
         auto lhsNum = std::static_pointer_cast<NumberVal>(lhs);
         auto rhsNum = std::static_pointer_cast<NumberVal>(rhs);
         return evaluateNumericBinaryExpr(lhsNum, rhsNum, binop->op);
     }
-
     return mkNull();
 }
 
@@ -48,11 +112,10 @@ std::shared_ptr<NumberVal> evaluateNumericBinaryExpr(std::shared_ptr<NumberVal> 
     {
         result = lhs->val / rhs->val;
     }
-    else
+    else if (op == "%")
     {
         result = std::fmod(lhs->val, rhs->val);
     }
-
     return std::make_shared<NumberVal>(result);
 }
 

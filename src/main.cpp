@@ -155,9 +155,6 @@ void repl()
 {
     Parser parser;
     std::shared_ptr<Environment> env = std::make_shared<Environment>();
-    env->declareVar("true", mkBool(true), true);
-    env->declareVar("false", mkBool(false), true);
-    env->declareVar("null", mkNull(), true);
     std::cout << "EINAH v0.1" << std::endl;
 
     while (true)

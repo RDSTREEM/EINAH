@@ -24,6 +24,10 @@ private:
     std::shared_ptr<Expr> parsePrimaryExpr();
     std::shared_ptr<Expr> parseAdditiveExpr();
     std::shared_ptr<Expr> parseMultiplicativeExpr();
+    std::shared_ptr<Expr> parseLogicalOrExpr();
+    std::shared_ptr<Expr> parseLogicalAndExpr();
+    std::shared_ptr<Expr> parseEqualityExpr();
+    std::shared_ptr<Expr> parseNotExpr();
 
 public:
     std::shared_ptr<Program> produceAST(const std::string &sourceCode);

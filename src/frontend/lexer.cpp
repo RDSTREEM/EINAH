@@ -31,67 +31,87 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::CloseParen, std::string(1, src.front())));
             src.erase(src.begin());
         }
-        else if (src.front() == '+' || src.front() == '-' || src.front() == '*' || src.front() == '/' || src.front() == '%')
+        else if (src.front() == '+')
         {
-            tokens.push_back(createToken(TokenType::BinaryOperator, std::string(1, src.front())));
+            tokens.push_back(createToken(TokenType::Plus, "+"));
             src.erase(src.begin());
         }
-        else if (src.front() == '=')
+        else if (src.front() == '-')
         {
-            tokens.push_back(createToken(TokenType::Equals, std::string(1, src.front())));
+            // Check for '->' first (already handled above), so this is just minus
+            tokens.push_back(createToken(TokenType::Minus, "-"));
             src.erase(src.begin());
         }
-        else if (src.front() == ';')
+        else if (src.front() == '*')
         {
-            tokens.push_back(createToken(TokenType::Semicolon, std::string(1, src.front())));
+            tokens.push_back(createToken(TokenType::Star, "*"));
+            src.erase(src.begin());
+        }
+        else if (src.front() == '/')
+        {
+            tokens.push_back(createToken(TokenType::Slash, "/"));
+            src.erase(src.begin());
+        }
+        else if (src.front() == '%')
+        {
+            tokens.push_back(createToken(TokenType::Percent, "%"));
+            src.erase(src.begin());
+        }
+        else if (src.size() >= 2 && src[0] == '~' && src[1] == '~')
+        {
+            tokens.push_back(createToken(TokenType::Eq, "~~"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.size() >= 2 && src[0] == '!' && src[1] == '~')
+        {
+            tokens.push_back(createToken(TokenType::Neq, "!~"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (std::isalpha(src.front()))
+        {
+            std::string ident = "";
+            while (!src.empty() && std::isalpha(src.front()))
+            {
+                ident += src.front();
+                src.erase(src.begin());
+            }
+            if (ident == "true" || ident == "false")
+            {
+                tokens.push_back(createToken(TokenType::Boolean, ident));
+            }
+            else if (ident == "null")
+            {
+                tokens.push_back(createToken(TokenType::Null, ident));
+            }
+            else if (ident == "and")
+            {
+                tokens.push_back(createToken(TokenType::And, ident));
+            }
+            else if (ident == "or")
+            {
+                tokens.push_back(createToken(TokenType::Or, ident));
+            }
+            else if (ident == "not")
+            {
+                tokens.push_back(createToken(TokenType::Not, ident));
+            }
+            else
+            {
+                auto reserved = KEYWORDS.find(ident);
+                if (reserved == KEYWORDS.end())
+                    tokens.push_back(createToken(TokenType::Identifier, ident));
+                else
+                    tokens.push_back(createToken(reserved->second, ident));
+            }
+        }
+        else if (isSkippable(src.front()))
+        {
             src.erase(src.begin());
         }
         else
         {
-            if (std::isdigit(src.front()))
-            {
-                std::string num = "";
-                while (!src.empty() && std::isdigit(src.front()))
-                {
-                    num.append(std::string(1, src.front()));
-                    src.erase(src.begin());
-                }
-                tokens.push_back(createToken(TokenType::Number, num));
-            }
-            else if (std::isalpha(src.front()))
-            {
-                std::string ident = "";
-                while (!src.empty() && std::isalpha(src.front()))
-                {
-                    ident += src.front();
-                    src.erase(src.begin());
-                }
-                if (ident == "true" || ident == "false")
-                {
-                    tokens.push_back(createToken(TokenType::Boolean, ident));
-                }
-                else if (ident == "null")
-                {
-                    tokens.push_back(createToken(TokenType::Null, ident));
-                }
-                else
-                {
-                    auto reserved = KEYWORDS.find(ident);
-                    if (reserved == KEYWORDS.end())
-                        tokens.push_back(createToken(TokenType::Identifier, ident));
-                    else
-                        tokens.push_back(createToken(reserved->second, ident));
-                }
-            }
-            else if (isSkippable(src.front()))
-            {
-                src.erase(src.begin());
-            }
-            else
-            {
-                std::cerr << "Unreconized character found in source: " << src.front() << std::endl;
-                exit(1);
-            }
+            std::cerr << "Unreconized character found in source: " << src.front() << std::endl;
+            exit(1);
         }
     }
 

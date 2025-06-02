@@ -15,7 +15,16 @@ enum class TokenType
     Arrow, // the equivalent of "="
     OpenParen,
     CloseParen,
-    BinaryOperator,
+    Plus,
+    Minus,
+    Star,
+    Slash,
+    Percent,
+    Eq,  // ~
+    Neq, // "!~"
+    And, // and
+    Or,  // or
+    Not, // not
     Let,
     Const,
     Boolean,
@@ -32,6 +41,9 @@ struct Token
 const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"let", TokenType::Let},
     {"const", TokenType::Const},
+    {"and", TokenType::And},
+    {"or", TokenType::Or},
+    {"not", TokenType::Not},
 };
 
 std::vector<Token> tokenize(const std::string &sourceCode);

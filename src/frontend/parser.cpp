@@ -45,6 +45,130 @@ std::shared_ptr<Expr> Parser::parseExpr()
     return parseAssignmentExpr();
 }
 
+std::shared_ptr<Expr> Parser::parseLogicalOrExpr()
+{
+    auto left = parseLogicalAndExpr();
+    while (at().type == TokenType::Or)
+    {
+        eat();
+        auto right = parseLogicalAndExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+        binop->left = left;
+        binop->right = right;
+        binop->op = "or";
+        left = binop;
+    }
+    return left;
+}
+
+std::shared_ptr<Expr> Parser::parseLogicalAndExpr()
+{
+    auto left = parseEqualityExpr();
+    while (at().type == TokenType::And)
+    {
+        eat();
+        auto right = parseEqualityExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+        binop->left = left;
+        binop->right = right;
+        binop->op = "and";
+        left = binop;
+    }
+    return left;
+}
+
+std::shared_ptr<Expr> Parser::parseEqualityExpr()
+{
+    auto left = parseAdditiveExpr();
+    while (at().type == TokenType::Eq || at().type == TokenType::Neq)
+    {
+        std::string op = (at().type == TokenType::Eq) ? "~~" : "!~";
+        eat();
+        auto right = parseAdditiveExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+        binop->left = left;
+        binop->right = right;
+        binop->op = op;
+        left = binop;
+    }
+    return left;
+}
+
+std::shared_ptr<Expr> Parser::parseNotExpr()
+{
+    if (at().type == TokenType::Not)
+    {
+        eat();
+        auto expr = parseNotExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+        binop->left = nullptr;
+        binop->right = expr;
+        binop->op = "not";
+        return binop;
+    }
+    return parsePrimaryExpr();
+}
+
+std::shared_ptr<Expr> Parser::parseMultiplicativeExpr()
+{
+    auto left = parseNotExpr();
+    while (
+        at().type == TokenType::Slash ||
+        at().type == TokenType::Star ||
+        at().type == TokenType::Percent)
+    {
+        std::string op;
+        if (at().type == TokenType::Slash)
+            op = "/";
+        else if (at().type == TokenType::Star)
+            op = "*";
+        else
+            op = "%";
+        eat();
+        auto right = parseNotExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+        binop->right = right;
+        binop->left = left;
+        binop->op = op;
+        left = binop;
+    }
+    return left;
+}
+
+std::shared_ptr<Expr> Parser::parseAdditiveExpr()
+{
+    auto left = parseMultiplicativeExpr();
+    while (
+        at().type == TokenType::Plus ||
+        at().type == TokenType::Minus)
+    {
+        std::string op = (at().type == TokenType::Plus) ? "+" : "-";
+        eat();
+        auto right = parseMultiplicativeExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+        binop->right = right;
+        binop->left = left;
+        binop->op = op;
+        left = binop;
+    }
+    return left;
+}
+
+std::shared_ptr<Expr> Parser::parseAssignmentExpr()
+{
+    auto left = parseLogicalOrExpr();
+    if (at().type == TokenType::Arrow)
+    {
+        eat();
+        auto right = parseAssignmentExpr();
+        auto assign = std::make_shared<AssignmentExpr>();
+        assign->asignee = left;
+        assign->value = right;
+        return assign;
+    }
+    return left;
+}
+
 std::shared_ptr<Expr> Parser::parsePrimaryExpr()
 {
     TokenType tk = at().type;
@@ -132,40 +256,6 @@ Token Parser::eat()
     return prev;
 }
 
-std::shared_ptr<Expr> Parser::parseAdditiveExpr()
-{
-    auto left = parseMultiplicativeExpr();
-
-    while (at().value == "+" || at().value == "-")
-    {
-        std::string op = eat().value;
-        auto right = parseMultiplicativeExpr();
-        auto binop = std::make_shared<BinaryExpr>();
-        binop->right = right;
-        binop->left = left;
-        binop->op = op;
-        left = binop;
-    }
-    return left;
-}
-
-std::shared_ptr<Expr> Parser::parseMultiplicativeExpr()
-{
-    auto left = parsePrimaryExpr();
-
-    while (at().value == "/" || at().value == "*" || at().value == "%")
-    {
-        std::string op = eat().value;
-        auto right = parsePrimaryExpr();
-        auto binop = std::make_shared<BinaryExpr>();
-        binop->right = right;
-        binop->left = left;
-        binop->op = op;
-        left = binop;
-    }
-    return left;
-}
-
 Token Parser::expect(TokenType type_, const std::string &err)
 {
     if (tokens.empty())
@@ -181,21 +271,6 @@ Token Parser::expect(TokenType type_, const std::string &err)
     }
 
     return prev;
-}
-
-std::shared_ptr<Expr> Parser::parseAssignmentExpr()
-{
-    auto left = parseAdditiveExpr();
-    if (at().type == TokenType::Arrow)
-    {
-        eat();
-        auto right = parseAssignmentExpr();
-        auto assign = std::make_shared<AssignmentExpr>();
-        assign->asignee = left;
-        assign->value = right;
-        return assign;
-    }
-    return left;
 }
 
 std::shared_ptr<Stmt> Parser::parseExprStatement()
