@@ -53,20 +53,15 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
     {
     case TokenType::Identifier:
     {
-
         Token token = eat();
         auto ident = std::make_shared<Identifier>();
-        ident->kind = NodeType::Identifier;
         ident->symbol = token.value;
         return ident;
-    };
+    }
     case TokenType::Number:
     {
-
         Token token = eat();
-        auto num = std::make_shared<NumericLiteral>();
-        num->kind = NodeType::NumericLiteral;
-        num->value = std::stod(token.value);
+        auto num = std::make_shared<NumericLiteral>(std::stod(token.value));
         return num;
     }
     case TokenType::Boolean:
@@ -88,12 +83,10 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         expect(TokenType::CloseParen, "Expected Closing Parenthesis");
         return value;
     }
-
     default:
         std::cerr << "Unexpected token token found during parsing: " << at();
         exit(-1);
     }
-
     return nullptr;
 }
 
@@ -107,14 +100,14 @@ std::shared_ptr<Stmt> Parser::parseVarDeclaration()
         eat();
         if (isConstant)
             throw std::runtime_error("Must assign value to a constant expression. No value provided.");
-        std::shared_ptr<VarDeclaration> varDeclare = std::make_shared<VarDeclaration>();
+        auto varDeclare = std::make_shared<VarDeclaration>();
         varDeclare->ident = ident.value;
         varDeclare->constant = false;
         return varDeclare;
     }
 
     expect(TokenType::Arrow, "Expected arrow token (->) after identifier in variable declaration");
-    std::shared_ptr<VarDeclaration> varDeclare = std::make_shared<VarDeclaration>();
+    auto varDeclare = std::make_shared<VarDeclaration>();
     varDeclare->value = parseExpr();
     varDeclare->constant = isConstant;
     varDeclare->ident = ident.value;
@@ -148,15 +141,11 @@ std::shared_ptr<Expr> Parser::parseAdditiveExpr()
         std::string op = eat().value;
         auto right = parseMultiplicativeExpr();
         auto binop = std::make_shared<BinaryExpr>();
-
-        binop->kind = NodeType::BinaryExpr;
         binop->right = right;
         binop->left = left;
         binop->op = op;
-
         left = binop;
     }
-
     return left;
 }
 
@@ -169,15 +158,11 @@ std::shared_ptr<Expr> Parser::parseMultiplicativeExpr()
         std::string op = eat().value;
         auto right = parsePrimaryExpr();
         auto binop = std::make_shared<BinaryExpr>();
-
-        binop->kind = NodeType::BinaryExpr;
         binop->right = right;
         binop->left = left;
         binop->op = op;
-
         left = binop;
     }
-
     return left;
 }
 
@@ -205,12 +190,11 @@ std::shared_ptr<Expr> Parser::parseAssignmentExpr()
     {
         eat();
         auto right = parseAssignmentExpr();
-        std::shared_ptr<AssignmentExpr> assign = std::make_shared<AssignmentExpr>();
+        auto assign = std::make_shared<AssignmentExpr>();
         assign->asignee = left;
         assign->value = right;
         return assign;
     }
-
     return left;
 }
 
