@@ -91,13 +91,18 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         num->value = std::stod(token.value);
         return num;
     }
-    // case TokenType::Null:
-    // {
-    //     eat();
-    //     auto null = std::make_shared<NullLiteral>();
-    //     null->kind = NodeType::NullLiteral;
-    //     return null;
-    // }
+    case TokenType::Boolean:
+    {
+        Token token = eat();
+        auto boolean = std::make_shared<BooleanLiteral>(token.value == "true");
+        return boolean;
+    }
+    case TokenType::Null:
+    {
+        eat();
+        auto null = std::make_shared<NullLiteral>();
+        return null;
+    }
     case TokenType::OpenParen:
     {
         eat();

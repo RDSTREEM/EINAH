@@ -16,10 +16,11 @@ enum class NodeType
     BinaryExpr,
     Identifier,
     NumericLiteral,
+    BooleanLiteral, // for true/false
+    NullLiteral,    // for null
 
     // ? Compiler Only
     ExprStatement
-    // NullLiteral
 };
 
 struct Stmt
@@ -74,17 +75,18 @@ struct Identifier : Expr
 struct NumericLiteral : Expr
 {
     double value;
-    NumericLiteral() { kind = NodeType::NumericLiteral; };
+    NumericLiteral(double v) : value(v) { kind = NodeType::NumericLiteral; }
 };
 
-// struct NullLiteral : Expr
-// {
-//     std::string value;
-//     NullLiteral()
-//     {
-//         kind = NodeType::NullLiteral;
-//         value = "null";
-//     };
-// };
+struct BooleanLiteral : Expr
+{
+    bool value;
+    BooleanLiteral(bool v) : value(v) { kind = NodeType::BooleanLiteral; }
+};
+
+struct NullLiteral : Expr
+{
+    NullLiteral() { kind = NodeType::NullLiteral; }
+};
 
 #endif

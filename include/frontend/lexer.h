@@ -7,18 +7,19 @@
 
 enum class TokenType
 {
-    Tilde,     // <-- Add for EINAH statement terminator
-    Semicolon, // (keep for legacy or error reporting)
+    Tilde,     // the terminator substituing for "l"
+    Semicolon, // to not have errors
     Identifier,
     Number,
     Equals,
-    Arrow, // <-- Added for EINAH assignment
+    Arrow, // the equivalent of "="
     OpenParen,
     CloseParen,
     BinaryOperator,
-    // Null
     Let,
     Const,
+    Boolean,
+    Null,
     EOFTk,
 };
 

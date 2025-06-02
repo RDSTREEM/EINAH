@@ -65,15 +65,21 @@ std::vector<Token> tokenize(const std::string &sourceCode)
                     ident += src.front();
                     src.erase(src.begin());
                 }
-
-                auto reserved = KEYWORDS.find(ident);
-                if (reserved == KEYWORDS.end())
+                if (ident == "true" || ident == "false")
                 {
-                    tokens.push_back(createToken(TokenType::Identifier, ident));
+                    tokens.push_back(createToken(TokenType::Boolean, ident));
+                }
+                else if (ident == "null")
+                {
+                    tokens.push_back(createToken(TokenType::Null, ident));
                 }
                 else
                 {
-                    tokens.push_back(createToken(reserved->second, ident));
+                    auto reserved = KEYWORDS.find(ident);
+                    if (reserved == KEYWORDS.end())
+                        tokens.push_back(createToken(TokenType::Identifier, ident));
+                    else
+                        tokens.push_back(createToken(reserved->second, ident));
                 }
             }
             else if (isSkippable(src.front()))
