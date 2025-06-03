@@ -20,13 +20,13 @@ enum class TokenType
     Star,
     Slash,
     Percent,
-    Eq,  // ~
-    Neq, // "!~"
-    And, // and
-    Or,  // or
-    Not, // not
-    Let,
-    Const,
+    Eq,     // ~
+    Neq,    // "!~"
+    And,    // and
+    Or,     // or
+    Not,    // not
+    Sprout, // mutable variable declaration
+    Root,   // immutable constant declaration
     Boolean,
     Null,
     Spit, // for printing
@@ -40,8 +40,8 @@ struct Token
 };
 
 const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
-    {"let", TokenType::Let},
-    {"const", TokenType::Const},
+    {"sprout", TokenType::Sprout},
+    {"root", TokenType::Root},
     {"and", TokenType::And},
     {"or", TokenType::Or},
     {"not", TokenType::Not},

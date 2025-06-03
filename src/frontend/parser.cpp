@@ -31,11 +31,11 @@ std::shared_ptr<Stmt> Parser::parseStmt()
 {
     switch (at().type)
     {
-    case TokenType::Let:
-    case TokenType::Const:
+    case TokenType::Sprout:
+    case TokenType::Root:
         return parseVarDeclaration();
 
-    case TokenType::Spit: // 'spit' keyword
+    case TokenType::Spit:
     {
         eat();
         auto arg = parseExpr();
@@ -226,8 +226,8 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
 
 std::shared_ptr<Stmt> Parser::parseVarDeclaration()
 {
-    const bool isConstant = (eat().type == TokenType::Const);
-    const Token ident = expect(TokenType::Identifier, "Expected identifier name following let|const keywords.");
+    const bool isConstant = (eat().type == TokenType::Root);
+    const Token ident = expect(TokenType::Identifier, "Expected identifier name following sprout|root keywords.");
 
     if (at().type == TokenType::Tilde)
     {
