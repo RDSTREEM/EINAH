@@ -178,10 +178,32 @@ void repl()
             break;
         }
 
-        std::shared_ptr<Program> program = parser.produceAST(input);
-        auto result = evaluate(program, env);
-        printHelper::printProgram(program);
-        printHelper::printRuntimeVal(result);
+        try
+        {
+            std::shared_ptr<Program> program = parser.produceAST(input);
+            auto result = evaluate(program, env);
+            if (input.find("#ast") != std::string::npos)
+            {
+                printHelper::printProgram(program);
+            }
+            bool isSpit = false;
+            if (!program->body.empty())
+            {
+                auto last = program->body.back();
+                if (last->kind == NodeType::PrintStatement)
+                {
+                    isSpit = true;
+                }
+            }
+            if (!isSpit && result)
+            {
+                printHelper::printRuntimeVal(result);
+            }
+        }
+        catch (const std::exception &e)
+        {
+            std::cout << "[Error] " << e.what() << std::endl;
+        }
     }
 }
 
