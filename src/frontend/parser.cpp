@@ -35,6 +35,16 @@ std::shared_ptr<Stmt> Parser::parseStmt()
     case TokenType::Const:
         return parseVarDeclaration();
 
+    case TokenType::Spit: // 'spit' keyword
+    {
+        eat();
+        auto arg = parseExpr();
+        expect(TokenType::Tilde, "Expected tilde (~) after spit statement");
+        auto stmt = std::make_shared<PrintStatement>();
+        stmt->argument = arg;
+        return stmt;
+    }
+
     default:
         return parseExprStatement();
     }

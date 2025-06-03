@@ -29,7 +29,7 @@ enum class TokenType
     Const,
     Boolean,
     Null,
-    Yeet, // for printing
+    Spit, // for printing
     EOFTk,
 };
 

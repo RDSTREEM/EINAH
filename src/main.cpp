@@ -1,7 +1,7 @@
 #include "frontend/parser.h"
 #include "runtime/interpreter.h"
 #include <iostream>
-#include <magic_enum.hpp>
+#include <third_party/magic_enum.hpp>
 
 namespace printHelper
 {

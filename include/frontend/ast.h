@@ -11,6 +11,7 @@ enum class NodeType
     Program,
     VarDeclaration,
     AssignmentExpr,
+    PrintStatement, // Add this for 'spit'
 
     // ? Expressions
     BinaryExpr,
@@ -56,6 +57,12 @@ struct ExprStatement : Stmt
 {
     std::shared_ptr<Expr> expr;
     ExprStatement() { kind = NodeType::ExprStatement; }
+};
+
+struct PrintStatement : Stmt
+{
+    std::shared_ptr<Expr> argument;
+    PrintStatement() { kind = NodeType::PrintStatement; }
 };
 
 struct BinaryExpr : Expr

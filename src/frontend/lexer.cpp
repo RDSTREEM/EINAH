@@ -102,6 +102,10 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             {
                 tokens.push_back(createToken(TokenType::Null, ident));
             }
+            else if (ident == "spit")
+            {
+                tokens.push_back(createToken(TokenType::Spit, ident));
+            }
             else
             {
                 auto reserved = KEYWORDS.find(ident);

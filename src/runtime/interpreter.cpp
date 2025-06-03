@@ -53,6 +53,31 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         auto exprStmt = std::static_pointer_cast<ExprStatement>(astNode);
         return evaluate(exprStmt->expr, env);
     }
+    case NodeType::PrintStatement:
+    {
+        auto printStmt = std::static_pointer_cast<PrintStatement>(astNode);
+        auto val = evaluate(printStmt->argument, env);
+        // Print value to console
+        if (val->_type == ValueType::Number)
+        {
+            auto num = std::static_pointer_cast<NumberVal>(val);
+            std::cout << num->val << std::endl;
+        }
+        else if (val->_type == ValueType::Boolean)
+        {
+            auto b = std::static_pointer_cast<BooleanVal>(val);
+            std::cout << (b->val ? "yup" : "nope") << std::endl;
+        }
+        else if (val->_type == ValueType::Null)
+        {
+            std::cout << "zip" << std::endl;
+        }
+        else
+        {
+            std::cout << "[object]" << std::endl;
+        }
+        return mkNull();
+    }
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << magic_enum::enum_name(astNode->kind) << std::endl;
         exit(1);
