@@ -5,11 +5,15 @@
 #include "frontend/ast.h"
 #include "runtime/environment.h"
 
+/**
+ * @brief Evaluate an AST node in the given environment.
+ *
+ * This function dispatches on the node type and interprets the AST recursively.
+ *
+ * @param astNode The AST node to evaluate.
+ * @param env The environment in which to evaluate the AST node.
+ * @return std::shared_ptr<RuntimeVal> The result of the evaluation.
+ */
 std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_ptr<Environment> env);
-// std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop, std::shared_ptr<Environment> env);
-// std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program, std::shared_ptr<Environment> env);
-// std::shared_ptr<NumberVal> evaluateNumericBinaryExpr(std::shared_ptr<NumberVal> lhs, std::shared_ptr<NumberVal> rhs, const std::string &op);
-// std::shared_ptr<RuntimeVal> evaluateIdentifier(std::shared_ptr<Identifier> ident, std::shared_ptr<Environment> env);
-// std::shared_ptr<RuntimeVal> evaluateVarDeclaration(std::shared_ptr<VarDeclaration> ident, std::shared_ptr<Environment> env);
 
 #endif

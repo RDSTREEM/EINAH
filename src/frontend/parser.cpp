@@ -50,6 +50,42 @@ std::shared_ptr<Stmt> Parser::parseStmt()
     }
 }
 
+std::shared_ptr<Stmt> Parser::parseExprStatement()
+{
+    auto expr = parseExpr();
+    expect(TokenType::Tilde, "Expected tilde (~) after statement expression");
+    auto stmt = std::make_shared<ExprStatement>();
+    stmt->expr = expr;
+    return stmt;
+}
+
+std::shared_ptr<Stmt> Parser::parseVarDeclaration()
+{
+    const bool isConstant = (eat().type == TokenType::Root);
+    const Token ident = expect(TokenType::Identifier, "Expected identifier name following sprout|root keywords.");
+
+    // If no assignment, must not be a constant
+    if (at().type == TokenType::Tilde)
+    {
+        eat();
+        if (isConstant)
+            throw std::runtime_error("Must assign value to a constant expression. No value provided.");
+        auto varDeclare = std::make_shared<VarDeclaration>();
+        varDeclare->ident = ident.value;
+        varDeclare->constant = false;
+        return varDeclare;
+    }
+
+    expect(TokenType::Arrow, "Expected arrow token (->) after identifier in variable declaration");
+    auto varDeclare = std::make_shared<VarDeclaration>();
+    varDeclare->value = parseExpr();
+    varDeclare->constant = isConstant;
+    varDeclare->ident = ident.value;
+    expect(TokenType::Tilde, "Variable declaration statement must end in a tilde (~).");
+    return varDeclare;
+}
+
+// Parse an expression (assignment or lower precedence)
 std::shared_ptr<Expr> Parser::parseExpr()
 {
     return parseAssignmentExpr();
@@ -218,36 +254,10 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         return value;
     }
     default:
-        std::cerr << "Unexpected token token found during parsing: " << at();
+        std::cerr << "Unexpected token found during parsing: " << at();
         exit(-1);
     }
     return nullptr;
-}
-
-std::shared_ptr<Stmt> Parser::parseVarDeclaration()
-{
-    const bool isConstant = (eat().type == TokenType::Root);
-    const Token ident = expect(TokenType::Identifier, "Expected identifier name following sprout|root keywords.");
-
-    if (at().type == TokenType::Tilde)
-    {
-        eat();
-        if (isConstant)
-            throw std::runtime_error("Must assign value to a constant expression. No value provided.");
-        auto varDeclare = std::make_shared<VarDeclaration>();
-        varDeclare->ident = ident.value;
-        varDeclare->constant = false;
-        return varDeclare;
-    }
-
-    expect(TokenType::Arrow, "Expected arrow token (->) after identifier in variable declaration");
-    auto varDeclare = std::make_shared<VarDeclaration>();
-    varDeclare->value = parseExpr();
-    varDeclare->constant = isConstant;
-    varDeclare->ident = ident.value;
-
-    expect(TokenType::Tilde, "Variable declaration statement must end in a tilde (~).");
-    return varDeclare;
 }
 
 Token Parser::at()
@@ -279,17 +289,5 @@ Token Parser::expect(TokenType type_, const std::string &err)
                   << prev << "- Expecting: " << magic_enum::enum_name(type_) << std::endl;
         exit(1);
     }
-
     return prev;
-}
-
-std::shared_ptr<Stmt> Parser::parseExprStatement()
-{
-    auto expr = parseExpr();
-    expect(TokenType::Tilde, "Expected tilde (~) after statement expression");
-
-    std::shared_ptr<ExprStatement> stmt = std::make_shared<ExprStatement>();
-    stmt->expr = expr;
-
-    return stmt;
 }

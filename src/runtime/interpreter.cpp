@@ -11,7 +11,7 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
     {
     case NodeType::NumericLiteral:
     {
-        std::shared_ptr<NumericLiteral> numNode = std::static_pointer_cast<NumericLiteral>(astNode);
+        auto numNode = std::static_pointer_cast<NumericLiteral>(astNode);
         return std::make_shared<NumberVal>(numNode->value);
     }
 
@@ -57,7 +57,6 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
     {
         auto printStmt = std::static_pointer_cast<PrintStatement>(astNode);
         auto val = evaluate(printStmt->argument, env);
-        // Print value to console
         if (val->_type == ValueType::Number)
         {
             auto num = std::static_pointer_cast<NumberVal>(val);

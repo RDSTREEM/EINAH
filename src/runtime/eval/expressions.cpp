@@ -5,7 +5,7 @@
 
 std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop, std::shared_ptr<Environment> env)
 {
-    // Unary NOT
+    // Handle unary NOT (~!)
     if (binop->op == "~!")
     {
         std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);

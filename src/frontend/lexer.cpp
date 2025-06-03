@@ -8,20 +8,21 @@ std::vector<Token> tokenize(const std::string &sourceCode)
     std::vector<Token> tokens;
     std::vector<char> src(sourceCode.begin(), sourceCode.end());
 
-    // Weird way to back trackingly get tokens
+    // Main tokenization loop
     while (!src.empty())
     {
-        if (src.size() >= 2 && src[0] == '~' && src[1] == '~')
+        // Handle multi-character tokens first
+        if (src.size() >= 2 && src[0] == '~' && src[1] == '~') // '~~' equality
         {
             tokens.push_back(createToken(TokenType::Eq, "~~"));
             src.erase(src.begin(), src.begin() + 2);
         }
-        else if (src.front() == '~')
+        else if (src.front() == '~') // '~' statement terminator
         {
             tokens.push_back(createToken(TokenType::Tilde, "~"));
             src.erase(src.begin());
         }
-        else if (src.size() >= 2 && src[0] == '-' && src[1] == '>')
+        else if (src.size() >= 2 && src[0] == '-' && src[1] == '>') // '->' assignment
         {
             tokens.push_back(createToken(TokenType::Arrow, "->"));
             src.erase(src.begin(), src.begin() + 2);
@@ -86,7 +87,7 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Not, "~!"));
             src.erase(src.begin(), src.begin() + 2);
         }
-        else if (std::isalpha(src.front()))
+        else if (std::isalpha(src.front())) // identifier or keyword
         {
             std::string ident = "";
             while (!src.empty() && std::isalpha(src.front()))
@@ -94,15 +95,16 @@ std::vector<Token> tokenize(const std::string &sourceCode)
                 ident += src.front();
                 src.erase(src.begin());
             }
-            if (ident == "yup" || ident == "nope")
+            // Recognize booleans, null, print, or keywords
+            if (ident == "yup" || ident == "nope") // boolean literals
             {
                 tokens.push_back(createToken(TokenType::Boolean, ident));
             }
-            else if (ident == "zip")
+            else if (ident == "zip") // null literal
             {
                 tokens.push_back(createToken(TokenType::Null, ident));
             }
-            else if (ident == "spit")
+            else if (ident == "spit") // print statement
             {
                 tokens.push_back(createToken(TokenType::Spit, ident));
             }
