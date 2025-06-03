@@ -101,6 +101,11 @@ private:
      * @return The parsed NOT expression node.
      */
     std::shared_ptr<Expr> parseNotExpr();
+    /**
+     * @brief Parse relational expressions (>, <, >=, <=).
+     * @return The parsed relational expression node.
+     */
+    std::shared_ptr<Expr> parseRelationalExpr();
 
 public:
     /**

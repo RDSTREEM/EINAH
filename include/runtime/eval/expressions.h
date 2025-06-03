@@ -38,4 +38,21 @@ std::shared_ptr<RuntimeVal> evaluateIdentifier(std::shared_ptr<Identifier> ident
  */
 std::shared_ptr<RuntimeVal> evaluateAssignmentExpr(std::shared_ptr<AssignmentExpr> node, std::shared_ptr<Environment> env);
 
+/**
+ * @brief Evaluate a unary expression (e.g., ~!a).
+ * @param op The unary operator as a string.
+ * @param operand The operand value.
+ * @return std::shared_ptr<RuntimeVal> The result of the unary operation.
+ */
+std::shared_ptr<RuntimeVal> evaluateUnaryExpr(const std::string &op, std::shared_ptr<RuntimeVal> operand);
+
+/**
+ * @brief Evaluate a relational binary expression (<, >, <~, >~).
+ * @param lhs The left-hand side value.
+ * @param rhs The right-hand side value.
+ * @param op The operator as a string.
+ * @return std::shared_ptr<RuntimeVal> The result of the relational operation.
+ */
+std::shared_ptr<RuntimeVal> evaluateRelationalBinaryExpr(std::shared_ptr<RuntimeVal> lhs, std::shared_ptr<RuntimeVal> rhs, const std::string &op);
+
 #endif

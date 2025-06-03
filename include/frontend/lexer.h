@@ -33,6 +33,10 @@ enum class TokenType
     Boolean,    // 'yup' or 'nope'
     Null,       // 'zip' (null literal)
     Spit,       // 'spit' (print statement)
+    Less,       // '<' less than
+    Greater,    // '>' greater than
+    LessEq,     // '<~' less than or equal
+    GreaterEq,  // '>~' greater than or equal
     EOFTk,      // end of file
 };
 
@@ -51,9 +55,8 @@ struct Token
 const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"sprout", TokenType::Sprout},
     {"root", TokenType::Root},
-    {"and", TokenType::And},
-    {"or", TokenType::Or},
-    {"not", TokenType::Not},
+    {"spit", TokenType::Spit},
+    {"zip", TokenType::Null},
 };
 
 /**
@@ -62,5 +65,13 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
  * @return std::vector<Token> The list of tokens.
  */
 std::vector<Token> tokenize(const std::string &sourceCode);
+
+/**
+ * @brief Creates token of the given type and value
+ * @param type The type of token to be created
+ * @param value The value of the token
+ * @return Token{type, value}
+ */
+Token createToken(TokenType type, const std::string &value);
 
 #endif

@@ -123,14 +123,43 @@ std::shared_ptr<Expr> Parser::parseLogicalAndExpr()
     return left;
 }
 
-std::shared_ptr<Expr> Parser::parseEqualityExpr()
+std::shared_ptr<Expr> Parser::parseRelationalExpr()
 {
     auto left = parseAdditiveExpr();
+    while (
+        at().type == TokenType::Less ||
+        at().type == TokenType::Greater ||
+        at().type == TokenType::LessEq ||
+        at().type == TokenType::GreaterEq)
+    {
+        std::string op;
+        if (at().type == TokenType::Less)
+            op = "<";
+        else if (at().type == TokenType::Greater)
+            op = ">";
+        else if (at().type == TokenType::LessEq)
+            op = "<~";
+        else
+            op = ">~";
+        eat();
+        auto right = parseAdditiveExpr();
+        auto binop = std::make_shared<BinaryExpr>();
+        binop->left = left;
+        binop->right = right;
+        binop->op = op;
+        left = binop;
+    }
+    return left;
+}
+
+std::shared_ptr<Expr> Parser::parseEqualityExpr()
+{
+    auto left = parseRelationalExpr();
     while (at().type == TokenType::Eq || at().type == TokenType::Neq)
     {
         std::string op = (at().type == TokenType::Eq) ? "~~" : "!~";
         eat();
-        auto right = parseAdditiveExpr();
+        auto right = parseRelationalExpr();
         auto binop = std::make_shared<BinaryExpr>();
         binop->left = left;
         binop->right = right;

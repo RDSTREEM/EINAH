@@ -87,6 +87,26 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Not, "~!"));
             src.erase(src.begin(), src.begin() + 2);
         }
+        else if (src.size() >= 2 && src[0] == '<' && src[1] == '~')
+        {
+            tokens.push_back(createToken(TokenType::LessEq, "<~"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.size() >= 2 && src[0] == '>' && src[1] == '~')
+        {
+            tokens.push_back(createToken(TokenType::GreaterEq, ">~"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.front() == '<')
+        {
+            tokens.push_back(createToken(TokenType::Less, "<"));
+            src.erase(src.begin());
+        }
+        else if (src.front() == '>')
+        {
+            tokens.push_back(createToken(TokenType::Greater, ">"));
+            src.erase(src.begin());
+        }
         else if (std::isalpha(src.front())) // identifier or keyword
         {
             std::string ident = "";
@@ -95,18 +115,10 @@ std::vector<Token> tokenize(const std::string &sourceCode)
                 ident += src.front();
                 src.erase(src.begin());
             }
-            // Recognize booleans, null, print, or keywords
-            if (ident == "yup" || ident == "nope") // boolean literals
+            // Recognize booleans
+            if (ident == "yup" || ident == "nope")
             {
                 tokens.push_back(createToken(TokenType::Boolean, ident));
-            }
-            else if (ident == "zip") // null literal
-            {
-                tokens.push_back(createToken(TokenType::Null, ident));
-            }
-            else if (ident == "spit") // print statement
-            {
-                tokens.push_back(createToken(TokenType::Spit, ident));
             }
             else
             {

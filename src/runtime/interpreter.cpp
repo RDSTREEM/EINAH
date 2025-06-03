@@ -77,6 +77,12 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         }
         return mkNull();
     }
+    case NodeType::UnaryExpr:
+    {
+        auto unaryNode = std::static_pointer_cast<UnaryExpr>(astNode);
+        auto argVal = evaluate(unaryNode->argument, env);
+        return evaluateUnaryExpr(unaryNode->op, argVal);
+    }
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << magic_enum::enum_name(astNode->kind) << std::endl;
         exit(1);

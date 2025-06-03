@@ -19,7 +19,8 @@ enum class NodeType
     NumericLiteral, // Number literal
     BooleanLiteral, // Boolean literal (yup/nope)
     NullLiteral,    // Null literal (zip)
-    ExprStatement   // Expression statement (expr ~)
+    ExprStatement,  // Expression statement (expr ~)
+    UnaryExpr       // Unary operation (e.g., ~!)
 };
 
 /**
@@ -46,14 +47,11 @@ struct Program : Stmt
     Program() { kind = NodeType::Program; }
 };
 
-/**
- * @brief Variable declaration node (sprout/root).
- */
 struct VarDeclaration : Stmt
 {
-    bool constant;               // true for root (const), false for sprout (let)
-    std::string ident;           // Variable name
-    std::shared_ptr<Expr> value; // Initial value (may be null for uninitialized sprout)
+    bool constant;
+    std::string ident;
+    std::shared_ptr<Expr> value;
     VarDeclaration() { kind = NodeType::VarDeclaration; }
 };
 
@@ -105,6 +103,13 @@ struct BooleanLiteral : Expr
 struct NullLiteral : Expr
 {
     NullLiteral() { kind = NodeType::NullLiteral; }
+};
+
+struct UnaryExpr : Expr
+{
+    std::string op;                 // The unary operator (e.g., ~!)
+    std::shared_ptr<Expr> argument; // The operand expression
+    UnaryExpr() { kind = NodeType::UnaryExpr; }
 };
 
 #endif

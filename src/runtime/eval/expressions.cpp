@@ -3,27 +3,17 @@
 #include <math.h>
 #include <iostream>
 
+// Forward declarations for modular functions
+std::shared_ptr<RuntimeVal> evaluateUnaryExpr(const std::string &op, std::shared_ptr<RuntimeVal> operand);
+std::shared_ptr<RuntimeVal> evaluateRelationalBinaryExpr(std::shared_ptr<RuntimeVal> lhs, std::shared_ptr<RuntimeVal> rhs, const std::string &op);
+
 std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop, std::shared_ptr<Environment> env)
 {
-    // Handle unary NOT (~!)
-    if (binop->op == "~!")
-    {
-        std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);
-        if (rhs->_type == ValueType::Boolean)
-        {
-            auto b = std::static_pointer_cast<BooleanVal>(rhs);
-            return mkBool(!b->val);
-        }
-        if (rhs->_type == ValueType::Number)
-        {
-            auto n = std::static_pointer_cast<NumberVal>(rhs);
-            return mkBool(n->val == 0);
-        }
-        return mkBool(false);
-    }
-
     std::shared_ptr<RuntimeVal> lhs = binop->left ? evaluate(binop->left, env) : nullptr;
     std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);
+
+    if (binop->op == "<" || binop->op == ">" || binop->op == "<~" || binop->op == ">~")
+        return evaluateRelationalBinaryExpr(lhs, rhs, binop->op);
 
     if (binop->op == "~~")
     {
@@ -91,6 +81,45 @@ std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop
         return evaluateNumericBinaryExpr(lhsNum, rhsNum, binop->op);
     }
     return mkNull();
+}
+
+// New: unary expression evaluation
+std::shared_ptr<RuntimeVal> evaluateUnaryExpr(const std::string &op, std::shared_ptr<RuntimeVal> operand)
+{
+    if (op == "~!")
+    {
+        if (operand->_type == ValueType::Boolean)
+        {
+            auto b = std::static_pointer_cast<BooleanVal>(operand);
+            return mkBool(!b->val);
+        }
+        if (operand->_type == ValueType::Number)
+        {
+            auto n = std::static_pointer_cast<NumberVal>(operand);
+            return mkBool(n->val == 0);
+        }
+        return mkBool(false);
+    }
+    // Add more unary ops as needed
+    return mkNull();
+}
+
+// New: relational binary expression evaluation
+std::shared_ptr<RuntimeVal> evaluateRelationalBinaryExpr(std::shared_ptr<RuntimeVal> lhs, std::shared_ptr<RuntimeVal> rhs, const std::string &op)
+{
+    if (!lhs || !rhs || lhs->_type != ValueType::Number || rhs->_type != ValueType::Number)
+        return mkBool(false);
+    auto l = std::static_pointer_cast<NumberVal>(lhs);
+    auto r = std::static_pointer_cast<NumberVal>(rhs);
+    if (op == "<")
+        return mkBool(l->val < r->val);
+    if (op == ">")
+        return mkBool(l->val > r->val);
+    if (op == "<~")
+        return mkBool(l->val <= r->val);
+    if (op == ">~")
+        return mkBool(l->val >= r->val);
+    return mkBool(false);
 }
 
 std::shared_ptr<NumberVal> evaluateNumericBinaryExpr(std::shared_ptr<NumberVal> lhs, std::shared_ptr<NumberVal> rhs, const std::string &op)
