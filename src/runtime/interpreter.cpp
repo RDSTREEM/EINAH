@@ -5,7 +5,6 @@
 #include <third_party/magic_enum.hpp>
 
 std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_ptr<Environment> env)
-
 {
     switch (astNode->kind)
     {

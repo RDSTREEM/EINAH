@@ -156,33 +156,88 @@ namespace printHelper
 
 }
 
+void printWelcome()
+{
+    std::cout << "EINAH v0.1\n";
+    std::cout << "Type 'help' for available commands.\n";
+}
+
+void printHelp()
+{
+    std::cout << "Available commands:\n";
+    std::cout << "  help         Show this help message\n";
+    std::cout << "  clear        Clear the screen\n";
+    std::cout << "  exit, quit   Exit the REPL\n";
+    std::cout << "  #ast         Print the AST for the input\n";
+    std::cout << "  (empty line) Repeat last input\n";
+}
+
+void clearScreen()
+{
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
 void repl()
 {
     Parser parser;
     std::shared_ptr<Environment> env = std::make_shared<Environment>();
-    std::cout << "EINAH v0.1" << std::endl;
+    printWelcome();
 
+    std::string lastInput;
     while (true)
     {
         std::string input;
         std::cout << "> ";
-
         if (!std::getline(std::cin, input))
         {
             break;
         }
-
-        if (input.empty() || input.find("exit") != std::string::npos)
+        // Trim whitespace
+        input.erase(0, input.find_first_not_of(" \t\n\r"));
+        input.erase(input.find_last_not_of(" \t\n\r") + 1);
+        if (input.empty())
+        {
+            if (lastInput.empty())
+                continue;
+            input = lastInput;
+            std::cout << ">> " << input << std::endl;
+        }
+        else
+        {
+            lastInput = input;
+        }
+        if (input == "help")
+        {
+            printHelp();
+            continue;
+        }
+        if (input == "clear")
+        {
+            clearScreen();
+            continue;
+        }
+        if (input == "exit" || input == "quit")
         {
             std::cout << "Exiting...\n";
             break;
         }
-
+        bool showAst = false;
+        size_t astPos = input.find("#ast");
+        if (astPos != std::string::npos)
+        {
+            showAst = true;
+            input = input.substr(0, astPos);
+            input.erase(input.find_last_not_of(" \t\n\r") + 1);
+        }
         try
         {
             std::shared_ptr<Program> program = parser.produceAST(input);
             auto result = evaluate(program, env);
-            if (input.find("#ast") != std::string::npos)
+            if (showAst)
             {
                 printHelper::printProgram(program);
             }
