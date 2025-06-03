@@ -44,13 +44,3 @@
 | Null               | `zip`                        | Null / None          |   |
 
 ---
-
-### 🛸 CONCURRENCY & ASYNC CONTROL
-
-| Category       | Keyword / Syntax                     | Meaning / Usage              |                      |
-| -------------- | ------------------------------------ | ---------------------------- | -------------------- |
-| Async Function | `conjure async fname(args) [ ... ]~` | Declare async function       |                      |
-| Await          | \`pause fname                        | arg\~\`                      | Await async function |
-| Thread Spawn   | `summon thread spin [ ... ]~`        | Run block in parallel thread |                      |
-
----

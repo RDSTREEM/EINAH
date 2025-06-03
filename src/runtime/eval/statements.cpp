@@ -1,5 +1,6 @@
 #include "runtime/eval/statements.h"
 #include "runtime/interpreter.h"
+#include <iostream>
 
 std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program, std::shared_ptr<Environment> env)
 {
@@ -17,4 +18,64 @@ std::shared_ptr<RuntimeVal> evaluateVarDeclaration(std::shared_ptr<VarDeclaratio
 {
     auto value = declaration->value ? evaluate(declaration->value, env) : mkNull();
     return env->declareVar(declaration->ident, value, declaration->constant);
+}
+
+std::shared_ptr<RuntimeVal> evalPrintStatement(std::shared_ptr<PrintStatement> printStmt, std::shared_ptr<Environment> env)
+{
+    auto val = evaluate(printStmt->argument, env);
+    if (val->_type == ValueType::Number)
+    {
+        auto num = std::static_pointer_cast<NumberVal>(val);
+        std::cout << num->val << std::endl;
+    }
+    else if (val->_type == ValueType::Boolean)
+    {
+        auto b = std::static_pointer_cast<BooleanVal>(val);
+        std::cout << (b->val ? "yup" : "nope") << std::endl;
+    }
+    else if (val->_type == ValueType::Null)
+    {
+        std::cout << "zip" << std::endl;
+    }
+    else
+    {
+        std::cout << "[object]" << std::endl;
+    }
+    return mkNull();
+}
+
+std::shared_ptr<RuntimeVal> evalConditionalStatement(std::shared_ptr<ConditionalStatement> condStmt, std::shared_ptr<Environment> env)
+{
+    auto condVal = evaluate(condStmt->condition, env);
+    if (condVal->_type != ValueType::Boolean)
+        throw std::runtime_error("Condition in conditional must evaluate to a boolean (yup/nope)");
+    auto b = std::static_pointer_cast<BooleanVal>(condVal);
+    if (b->val)
+    {
+        auto blockEnv = std::make_shared<Environment>(env);
+        std::shared_ptr<RuntimeVal> last = mkNull();
+        for (const auto &stmt : condStmt->thenBlock)
+        {
+            last = evaluate(stmt, blockEnv);
+        }
+        return last;
+    }
+    std::shared_ptr<RuntimeVal> last = mkNull();
+    for (const auto &stmt : condStmt->elseBlock)
+    {
+        if (stmt->kind == NodeType::ConditionalStatement)
+        {
+            last = evalConditionalStatement(std::static_pointer_cast<ConditionalStatement>(stmt), env);
+            if (last != nullptr && last->_type != ValueType::Null)
+            {
+                return last;
+            }
+        }
+        else
+        {
+            auto blockEnv = std::make_shared<Environment>(env);
+            last = evaluate(stmt, blockEnv);
+        }
+    }
+    return last;
 }

@@ -10,17 +10,18 @@
  */
 enum class NodeType
 {
-    Program,        // Top-level program node
-    VarDeclaration, // Variable declaration (sprout/root)
-    AssignmentExpr, // Assignment (a -> b)
-    PrintStatement, // Print statement (spit)
-    BinaryExpr,     // Binary operation (e.g., +, -, ~~, !~)
-    Identifier,     // Variable or symbol
-    NumericLiteral, // Number literal
-    BooleanLiteral, // Boolean literal (yup/nope)
-    NullLiteral,    // Null literal (zip)
-    ExprStatement,  // Expression statement (expr ~)
-    UnaryExpr       // Unary operation (e.g., ~!)
+    Program,             // Top-level program node
+    VarDeclaration,      // Variable declaration (sprout/root)
+    AssignmentExpr,      // Assignment (a -> b)
+    PrintStatement,      // Print statement (spit)
+    BinaryExpr,          // Binary operation (e.g., +, -, ~~, !~)
+    Identifier,          // Variable or symbol
+    NumericLiteral,      // Number literal
+    BooleanLiteral,      // Boolean literal (yup/nope)
+    NullLiteral,         // Null literal (zip)
+    ExprStatement,       // Expression statement (expr ~)
+    UnaryExpr,           // Unary operation (e.g., ~!)
+    ConditionalStatement // Conditional (whisper ... then ... or ...~)
 };
 
 /**
@@ -110,6 +111,14 @@ struct UnaryExpr : Expr
     std::string op;                 // The unary operator (e.g., ~!)
     std::shared_ptr<Expr> argument; // The operand expression
     UnaryExpr() { kind = NodeType::UnaryExpr; }
+};
+
+struct ConditionalStatement : Stmt
+{
+    std::shared_ptr<Expr> condition;
+    std::vector<std::shared_ptr<Stmt>> thenBlock;
+    std::vector<std::shared_ptr<Stmt>> elseBlock;
+    ConditionalStatement() { kind = NodeType::ConditionalStatement; }
 };
 
 #endif

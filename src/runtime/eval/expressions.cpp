@@ -162,3 +162,9 @@ std::shared_ptr<RuntimeVal> evaluateAssignmentExpr(std::shared_ptr<AssignmentExp
     const std::string varName = std::static_pointer_cast<Identifier>(node->asignee)->symbol;
     return env->assignVar(varName, evaluate(node->value, env));
 }
+
+std::shared_ptr<RuntimeVal> evalUnaryExpr(std::shared_ptr<UnaryExpr> unaryNode, std::shared_ptr<Environment> env)
+{
+    auto argVal = evaluate(unaryNode->argument, env);
+    return evaluateUnaryExpr(unaryNode->op, argVal);
+}

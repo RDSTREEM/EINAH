@@ -55,4 +55,12 @@ std::shared_ptr<RuntimeVal> evaluateUnaryExpr(const std::string &op, std::shared
  */
 std::shared_ptr<RuntimeVal> evaluateRelationalBinaryExpr(std::shared_ptr<RuntimeVal> lhs, std::shared_ptr<RuntimeVal> rhs, const std::string &op);
 
+/**
+ * @brief Evaluate a unary expression node.
+ * @param unaryNode The unary expression node.
+ * @param env The environment in which to evaluate.
+ * @return std::shared_ptr<RuntimeVal> The result of the unary expression evaluation.
+ */
+std::shared_ptr<RuntimeVal> evalUnaryExpr(std::shared_ptr<UnaryExpr> unaryNode, std::shared_ptr<Environment> env);
+
 #endif

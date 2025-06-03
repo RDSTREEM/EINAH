@@ -14,30 +14,35 @@ enum class TokenType
     Semicolon, // unused, for compatibility
     Identifier,
     Number,
-    Equals,     // unused, for compatibility
-    Arrow,      // '->' assignment operator (like '=')
-    OpenParen,  // '('
-    CloseParen, // ')'
-    Plus,       // '+'
-    Minus,      // '-'
-    Star,       // '*'
-    Slash,      // '/'
-    Percent,    // '%'
-    Eq,         // '~~' equality operator
-    Neq,        // '!~' not-equal operator
-    And,        // '&=' logical and
-    Or,         // '|=' logical or
-    Not,        // '~!' logical not
-    Sprout,     // 'sprout' mutable variable declaration (like 'let')
-    Root,       // 'root' immutable variable declaration (like 'const')
-    Boolean,    // 'yup' or 'nope'
-    Null,       // 'zip' (null literal)
-    Spit,       // 'spit' (print statement)
-    Less,       // '<' less than
-    Greater,    // '>' greater than
-    LessEq,     // '<~' less than or equal
-    GreaterEq,  // '>~' greater than or equal
-    EOFTk,      // end of file
+    Equals,       // unused, for compatibility
+    Arrow,        // '->' assignment operator (like '=')
+    OpenParen,    // '('
+    CloseParen,   // ')'
+    Plus,         // '+'
+    Minus,        // '-'
+    Star,         // '*'
+    Slash,        // '/'
+    Percent,      // '%'
+    Eq,           // '~~' equality operator
+    Neq,          // '!~' not-equal operator
+    And,          // '&=' logical and
+    Or,           // '|=' logical or
+    Not,          // '~!' logical not
+    Sprout,       // 'sprout' mutable variable declaration (like 'let')
+    Root,         // 'root' immutable variable declaration (like 'const')
+    Boolean,      // 'yup' or 'nope'
+    Null,         // 'zip' (null literal)
+    Spit,         // 'spit' (print statement)
+    Less,         // '<' less than
+    Greater,      // '>' greater than
+    LessEq,       // '<~' less than or equal
+    GreaterEq,    // '>~' greater than or equal
+    Whisper,      // 'whisper' conditional
+    Then,         // 'then' keyword
+    Or,           // 'or' keyword
+    OpenBracket,  // '['
+    CloseBracket, // ']'
+    EOFTk,        // end of file
 };
 
 /**
@@ -57,6 +62,9 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"root", TokenType::Root},
     {"spit", TokenType::Spit},
     {"zip", TokenType::Null},
+    {"whisper", TokenType::Whisper},
+    {"then", TokenType::Then},
+    {"or", TokenType::Or},
 };
 
 /**
