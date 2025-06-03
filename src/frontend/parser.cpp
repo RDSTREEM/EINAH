@@ -55,7 +55,7 @@ std::shared_ptr<Expr> Parser::parseLogicalOrExpr()
         auto binop = std::make_shared<BinaryExpr>();
         binop->left = left;
         binop->right = right;
-        binop->op = "or";
+        binop->op = "|=";
         left = binop;
     }
     return left;
@@ -71,7 +71,7 @@ std::shared_ptr<Expr> Parser::parseLogicalAndExpr()
         auto binop = std::make_shared<BinaryExpr>();
         binop->left = left;
         binop->right = right;
-        binop->op = "and";
+        binop->op = "&=";
         left = binop;
     }
     return left;
@@ -103,7 +103,7 @@ std::shared_ptr<Expr> Parser::parseNotExpr()
         auto binop = std::make_shared<BinaryExpr>();
         binop->left = nullptr;
         binop->right = expr;
-        binop->op = "not";
+        binop->op = "~!";
         return binop;
     }
     return parsePrimaryExpr();
@@ -191,7 +191,7 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
     case TokenType::Boolean:
     {
         Token token = eat();
-        auto boolean = std::make_shared<BooleanLiteral>(token.value == "true");
+        auto boolean = std::make_shared<BooleanLiteral>(token.value == "yup");
         return boolean;
     }
     case TokenType::Null:

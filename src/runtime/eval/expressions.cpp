@@ -6,7 +6,7 @@
 std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop, std::shared_ptr<Environment> env)
 {
     // Unary NOT
-    if (binop->op == "not")
+    if (binop->op == "~!")
     {
         std::shared_ptr<RuntimeVal> rhs = evaluate(binop->right, env);
         if (rhs->_type == ValueType::Boolean)
@@ -63,7 +63,7 @@ std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop
         }
         return mkBool(true);
     }
-    if (binop->op == "and")
+    if (binop->op == "&=")
     {
         if (lhs && rhs && lhs->_type == ValueType::Boolean && rhs->_type == ValueType::Boolean)
         {
@@ -73,7 +73,7 @@ std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop
         }
         return mkBool(false);
     }
-    if (binop->op == "or")
+    if (binop->op == "|=")
     {
         if (lhs && rhs && lhs->_type == ValueType::Boolean && rhs->_type == ValueType::Boolean)
         {

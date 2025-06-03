@@ -1,117 +1,56 @@
+## 🪄 EINAH v3.0 — Functional Core Cheat Sheet
 
-🧙‍♂️ EINAH v2.1 — Final Syntax Rules
-> A language so stylish, even Rick would approve.
+### 🚧 SYNTAX CORE
 
-🔧 CORE PRINCIPLES
+| Category         | Keyword / Symbol | Meaning / Usage                |
+| ---------------- | ---------------- | ------------------------------ |
+| Statement End    | `~`              | End of any statement           |
+| Declare Variable | `sprout`         | Mutable variable declaration   |
+| Declare Constant | `root`           | Immutable constant declaration |
+| Assign/Reassign  | `->`             | Assignment or reassignment     |
+| Define Function  | `conjure`        | Declare a function             |
+| Call Function    | `\|`             | Call a function                |
+| Return           | `zipback`        | Return value from function     |
+| Block            | `[ ... ]`        | Code block                     |
+| Comment          | `hush`           | Single-line comment            |
+| Print            | `spit`           | Output to console              |
 
-Feature            | Syntax
------------------- | -------------------------------------
-Statement End      | ~ (tilde) only
-Variable Decl      | let x -> value~ / const x -> value~
-Reassignment       | x -> newValue~
-Function Decl      | craft fname(args) [ ... ]~
-Function Call      | fname | arg1, arg2~
-Indexing           | arr.0, obj.key
-Block Delimiters   | [ ... ]
-Conditional        | when <cond> then [ ... ] else [ ... ]~
-Loop               | loop <cond> do [ ... ]~
-Print              | yeet something~
-Return             | boomerang value~
-Comments           | shhh ...
-Equality           | x ~~ y
-Inequality         | x !~ y
-Easter Eggs        | rickroll~, kaboom~
+---
 
-🧱 SYNTAX IN DEPTH
+### 🔁 CONTROL FLOW
 
-1. 📌 Statements and Assignment
-let x -> 10~
-const pi -> 3.14~
-x -> x + 1~
+| Category      | Keyword / Symbol                      | Meaning / Usage                 |
+| ------------- | ------------------------------------- | ------------------------------- |
+| Conditional   | `whisper <cond> then [...] or [...]~` | If / else block                 |
+| Loop (While)  | `twirl <cond> spin [...]~`            | While loop                      |
+| Infinite Loop | `twirl forever spin [...]~`           | Loop forever                    |
+| Loop Control  | `shatter spin~`                       | Break out of loop               |
+|               | `skip spin~`                          | Continue to next loop iteration |
 
-2. 📦 Objects and Arrays
-let arr -> [1, 2, 3]~
-yeet arr.0~  # prints 1
+---
 
-let obj -> {
-  name: "Einah"~,
-  power: 9000~
-}~
-yeet obj.name~
-obj.power -> 9999~
+### 🧠 EXPRESSIONS
 
-3. 📞 Functions
-craft greet(name) [
-  yeet "Hello, " + name~
-]~
-greet | "Einah"~
+| Category           | Symbol / Literal             | Meaning / Usage      |   |
+| ------------------ | ---------------------------- | -------------------- | - |
+| Boolean True/False | `yup`, `nope`                | Boolean literals     |   |
+| Boolean AND        | `&=`                         | Logical AND          |   |
+| Boolean OR         | `\|=`                        | Logical OR           |   |
+| Boolean NOT        | `~!`                         | Logical NOT          |   |
+| Equality           | `~~`                         | Equal to             |   |
+| Inequality         | `!~`                         | Not equal to         |   |
+| Comparison         | `<`, `>`, `<~`, `>~`         | Relational operators |   |
+| Arithmetic         | `+`, `-`, `*`, `/`, `%`, `^` | Math operations      |   |
+| Null               | `zip`                        | Null / None          |   |
 
-craft add(a, b) [
-  boomerang a + b~
-]~
-yeet add | 10, 5~
+---
 
-4. 🔁 Loops
-let x -> 1~
-loop <x < 6> do [
-  yeet x~
-  x -> x + 1~
-]~
+### 🛸 CONCURRENCY & ASYNC CONTROL
 
-5. 🌳 Conditionals
-when <x ~~ 3> then [
-  yeet "Three!"~
-] else [
-  yeet "Not three!"~
-]~
+| Category       | Keyword / Syntax                     | Meaning / Usage              |                      |
+| -------------- | ------------------------------------ | ---------------------------- | -------------------- |
+| Async Function | `conjure async fname(args) [ ... ]~` | Declare async function       |                      |
+| Await          | \`pause fname                        | arg\~\`                      | Await async function |
+| Thread Spawn   | `summon thread spin [ ... ]~`        | Run block in parallel thread |                      |
 
-6. 📣 Print and Return
-yeet "This is printed"~
-boomerang 42~
-
-7. 🧼 Comments
-shhh This is a comment
-
-8. 🐣 Easter Eggs
-rickroll~
-kaboom~
-
-💡 Sample EINAH v2.1 Program
-shhh Print numbers and a message~
-let x -> 1~
-loop <x < 6> do [
-  when <x ~~ 3> then [
-    yeet "Midway there! 🔥"~
-  ] else [
-    yeet x~
-  ]~
-  x -> x + 1~
-]~
-
-let person -> {
-  name: "Rick"~,
-  catchphrase: "Wubba Lubba Dub Dub"~
-}~
-yeet person.name~
-yeet person.catchphrase~
-
-craft add(a, b) [
-  boomerang a + b~
-]~
-yeet add | 10, 20~
-rickroll~
-
-✅ Summary
-
-Type         | Syntax Example
------------- | ----------------------------
-Decl         | let x -> 5~
-Reassign     | x -> x + 1~
-Function     | craft foo(a) [ ... ]~
-Call         | foo | arg1, arg2~
-Conditional  | when <cond> then [ ... ] else [ ... ]~
-Loop         | loop <cond> do [ ... ]~
-Print        | yeet value~
-Return       | boomerang value~
-Comments     | shhh comment
-EOF Fun      | rickroll~, kaboom~
+---

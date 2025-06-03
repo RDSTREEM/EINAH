@@ -71,6 +71,21 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Neq, "!~"));
             src.erase(src.begin(), src.begin() + 2);
         }
+        else if (src.size() >= 2 && src[0] == '&' && src[1] == '=')
+        {
+            tokens.push_back(createToken(TokenType::And, "&="));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.size() >= 2 && src[0] == '|' && src[1] == '=')
+        {
+            tokens.push_back(createToken(TokenType::Or, "|="));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.size() >= 2 && src[0] == '~' && src[1] == '!')
+        {
+            tokens.push_back(createToken(TokenType::Not, "~!"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
         else if (std::isalpha(src.front()))
         {
             std::string ident = "";
@@ -79,25 +94,13 @@ std::vector<Token> tokenize(const std::string &sourceCode)
                 ident += src.front();
                 src.erase(src.begin());
             }
-            if (ident == "true" || ident == "false")
+            if (ident == "yup" || ident == "nope")
             {
                 tokens.push_back(createToken(TokenType::Boolean, ident));
             }
-            else if (ident == "null")
+            else if (ident == "zip")
             {
                 tokens.push_back(createToken(TokenType::Null, ident));
-            }
-            else if (ident == "and")
-            {
-                tokens.push_back(createToken(TokenType::And, ident));
-            }
-            else if (ident == "or")
-            {
-                tokens.push_back(createToken(TokenType::Or, ident));
-            }
-            else if (ident == "not")
-            {
-                tokens.push_back(createToken(TokenType::Not, ident));
             }
             else
             {
