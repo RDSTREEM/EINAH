@@ -5,6 +5,9 @@
 #include "frontend/ast.h"
 #include "runtime/environment.h"
 
+extern std::shared_ptr<RuntimeVal> SKIP_SIGNAL;
+extern std::shared_ptr<RuntimeVal> SHATTER_SIGNAL;
+
 /**
  * @brief Evaluate a program node (sequence of statements).
  * @param program The program node.
@@ -44,5 +47,16 @@ std::shared_ptr<RuntimeVal> evalConditionalStatement(std::shared_ptr<Conditional
  * @return std::shared_ptr<RuntimeVal> The result of the loop evaluation (usually null or void).
  */
 std::shared_ptr<RuntimeVal> evalWhileLoop(std::shared_ptr<WhileLoop> loop, std::shared_ptr<Environment> env);
+
+/**
+ * @brief Evaluate a skip (continue) statement.
+ * @return SKIP_SIGNAL.
+ */
+std::shared_ptr<RuntimeVal> evalSkipStatement();
+/**
+ * @brief Evaluate a shatter (break) statement.
+ * @return SHATTER_SIGNAL.
+ */
+std::shared_ptr<RuntimeVal> evalShatterStatement();
 
 #endif

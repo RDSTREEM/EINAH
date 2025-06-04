@@ -24,6 +24,8 @@ enum class NodeType
     ConditionalStatement, // Conditional (whisper ... then ... or ...~)
     StringLiteral,        // String literal
     WhileLoop,            // While loop node
+    Skip,                 // Continue statement
+    Shatter,              // Break statement
 };
 
 /**
@@ -134,6 +136,16 @@ struct WhileLoop : Stmt
     std::shared_ptr<Expr> condition;
     std::vector<std::shared_ptr<Stmt>> body;
     WhileLoop() { kind = NodeType::WhileLoop; }
+};
+
+struct SkipStatement : Stmt
+{
+    SkipStatement() { kind = NodeType::Skip; }
+};
+
+struct ShatterStatement : Stmt
+{
+    ShatterStatement() { kind = NodeType::Shatter; }
 };
 
 #endif

@@ -44,6 +44,16 @@ std::shared_ptr<Stmt> Parser::parseStmt()
     case TokenType::Twirl:
         return parseWhileLoop();
 
+    case TokenType::Skip:
+        eat();
+        expect(TokenType::Tilde, "Expected '~' after skip statement");
+        return std::make_shared<SkipStatement>();
+
+    case TokenType::Shatter:
+        eat();
+        expect(TokenType::Tilde, "Expected '~' after shatter statement");
+        return std::make_shared<ShatterStatement>();
+
     default:
         return parseExprStatement();
     }

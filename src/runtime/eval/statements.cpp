@@ -1,6 +1,11 @@
 #include "runtime/eval/statements.h"
 #include "runtime/interpreter.h"
 #include <iostream>
+#include <stdexcept>
+
+// Provide the single definitions for the singleton signals (no static!)
+std::shared_ptr<RuntimeVal> SKIP_SIGNAL = std::make_shared<RuntimeVal>();    // Singleton for skip statement
+std::shared_ptr<RuntimeVal> SHATTER_SIGNAL = std::make_shared<RuntimeVal>(); // Singleton for shatter statement
 
 std::shared_ptr<RuntimeVal> evaluateProgram(std::shared_ptr<Program> program, std::shared_ptr<Environment> env)
 {
@@ -23,6 +28,10 @@ std::shared_ptr<RuntimeVal> evaluateVarDeclaration(std::shared_ptr<VarDeclaratio
 std::shared_ptr<RuntimeVal> evalPrintStatement(std::shared_ptr<PrintStatement> printStmt, std::shared_ptr<Environment> env)
 {
     auto val = evaluate(printStmt->argument, env);
+    if (val == SKIP_SIGNAL || val == SHATTER_SIGNAL)
+    {
+        return val;
+    }
     if (val->_type == ValueType::Number)
     {
         auto num = std::static_pointer_cast<NumberVal>(val);
@@ -85,6 +94,21 @@ std::shared_ptr<RuntimeVal> evalConditionalStatement(std::shared_ptr<Conditional
     return last;
 }
 
+// Todo: Pls for gods sake fix me
+static std::shared_ptr<RuntimeVal> evalLoopBody(const std::vector<std::shared_ptr<Stmt>> &body, std::shared_ptr<Environment> env, std::shared_ptr<RuntimeVal> &last)
+{
+    for (const auto &stmt : body)
+    {
+        auto result = evaluate(stmt, env);
+        if (result == SKIP_SIGNAL)
+            break;
+        if (result == SHATTER_SIGNAL)
+            return SHATTER_SIGNAL;
+        last = result;
+    }
+    return nullptr;
+}
+
 std::shared_ptr<RuntimeVal> evalWhileLoop(std::shared_ptr<WhileLoop> loop, std::shared_ptr<Environment> env)
 {
     std::shared_ptr<RuntimeVal> last = mkNull();
@@ -97,10 +121,21 @@ std::shared_ptr<RuntimeVal> evalWhileLoop(std::shared_ptr<WhileLoop> loop, std::
         if (!b->val)
             break;
         auto blockEnv = std::make_shared<Environment>(env);
-        for (const auto &stmt : loop->body)
-        {
-            last = evaluate(stmt, blockEnv);
-        }
+        auto signal = evalLoopBody(loop->body, blockEnv, last);
+        if (signal == SHATTER_SIGNAL)
+            break;
+        if (signal == SKIP_SIGNAL)
+            continue;
     }
     return last;
+}
+
+std::shared_ptr<RuntimeVal> evalSkipStatement()
+{
+    return SKIP_SIGNAL;
+}
+
+std::shared_ptr<RuntimeVal> evalShatterStatement()
+{
+    return SHATTER_SIGNAL;
 }

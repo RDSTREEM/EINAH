@@ -48,6 +48,8 @@ enum class TokenType
     AngleClose,   // '>' used as a delimiter (not relational)
     Twirl,        // 'twirl' while loop keyword
     Spin,         // 'spin' while loop block keyword
+    Skip,         // 'skip' continue statement
+    Shatter,      // 'shatter' break statement
 };
 
 /**
@@ -72,6 +74,8 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"or", TokenType::OrKeyword},
     {"twirl", TokenType::Twirl},
     {"spin", TokenType::Spin},
+    {"skip", TokenType::Skip},
+    {"shatter", TokenType::Shatter},
 };
 
 /**
