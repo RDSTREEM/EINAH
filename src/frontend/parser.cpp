@@ -349,6 +349,12 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         expect(TokenType::CloseParen, "Expected Closing Parenthesis");
         return value;
     }
+    case TokenType::String:
+    {
+        Token token = eat();
+        auto str = std::make_shared<StringLiteral>(token.value);
+        return str;
+    }
     default:
         std::cerr << "Unexpected token found during parsing: " << at();
         exit(-1);

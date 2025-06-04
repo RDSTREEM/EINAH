@@ -14,3 +14,8 @@ std::shared_ptr<BooleanVal> mkBool(bool val = true)
 {
     return std::make_shared<BooleanVal>(val);
 }
+
+std::shared_ptr<StringVal> mkString(const std::string &val)
+{
+    return std::make_shared<StringVal>(val);
+}

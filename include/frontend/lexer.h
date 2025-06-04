@@ -42,6 +42,7 @@ enum class TokenType
     OrKeyword,    // 'or'
     OpenBracket,  // '['
     CloseBracket, // ']'
+    String,       // #...# string literal
     EOFTk,        // end of file
 };
 

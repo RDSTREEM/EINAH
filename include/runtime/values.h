@@ -9,9 +9,10 @@
  */
 enum class ValueType
 {
-    Null,   // zip
-    Number, // numeric
-    Boolean // yup/nope
+    Null,    // zip
+    Number,  // numeric
+    Boolean, // yup/nope
+    String   // string value
 };
 
 /**
@@ -60,6 +61,18 @@ struct BooleanVal : RuntimeVal
 };
 
 /**
+ * @brief String value.
+ */
+struct StringVal : RuntimeVal
+{
+    std::string val; // The string value.
+    StringVal(const std::string &v) : val(v)
+    {
+        _type = ValueType::String;
+    }
+};
+
+/**
  * @brief Create a new number value.
  * @param val The numeric value.
  * @return std::shared_ptr<NumberVal> The created number value.
@@ -76,5 +89,11 @@ std::shared_ptr<NullVal> mkNull();
  * @return std::shared_ptr<BooleanVal> The created boolean value.
  */
 std::shared_ptr<BooleanVal> mkBool(bool val);
+/**
+ * @brief Create a new string value.
+ * @param val The string value.
+ * @return std::shared_ptr<StringVal> The created string value.
+ */
+std::shared_ptr<StringVal> mkString(const std::string &val);
 
 #endif

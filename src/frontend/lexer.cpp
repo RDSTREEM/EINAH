@@ -117,6 +117,26 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::CloseBracket, "]"));
             src.erase(src.begin());
         }
+        else if (src.front() == '#')
+        {
+            src.erase(src.begin());
+            std::string str = "";
+            while (!src.empty() && src.front() != '#')
+            {
+                str += src.front();
+                src.erase(src.begin());
+            }
+            if (!src.empty() && src.front() == '#')
+            {
+                src.erase(src.begin());
+                tokens.push_back(createToken(TokenType::String, str));
+            }
+            else
+            {
+                std::cerr << "Unterminated string literal" << std::endl;
+                exit(1);
+            }
+        }
         else if (std::isalpha(src.front())) // identifier or keyword
         {
             std::string ident = "";

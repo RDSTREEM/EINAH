@@ -10,18 +10,19 @@
  */
 enum class NodeType
 {
-    Program,             // Top-level program node
-    VarDeclaration,      // Variable declaration (sprout/root)
-    AssignmentExpr,      // Assignment (a -> b)
-    PrintStatement,      // Print statement (spit)
-    BinaryExpr,          // Binary operation (e.g., +, -, ~~, !~)
-    Identifier,          // Variable or symbol
-    NumericLiteral,      // Number literal
-    BooleanLiteral,      // Boolean literal (yup/nope)
-    NullLiteral,         // Null literal (zip)
-    ExprStatement,       // Expression statement (expr ~)
-    UnaryExpr,           // Unary operation (e.g., ~!)
-    ConditionalStatement // Conditional (whisper ... then ... or ...~)
+    Program,              // Top-level program node
+    VarDeclaration,       // Variable declaration (sprout/root)
+    AssignmentExpr,       // Assignment (a -> b)
+    PrintStatement,       // Print statement (spit)
+    BinaryExpr,           // Binary operation (e.g., +, -, ~~, !~)
+    Identifier,           // Variable or symbol
+    NumericLiteral,       // Number literal
+    BooleanLiteral,       // Boolean literal (yup/nope)
+    NullLiteral,          // Null literal (zip)
+    ExprStatement,        // Expression statement (expr ~)
+    UnaryExpr,            // Unary operation (e.g., ~!)
+    ConditionalStatement, // Conditional (whisper ... then ... or ...~)
+    StringLiteral,        // String literal
 };
 
 /**
@@ -119,6 +120,12 @@ struct ConditionalStatement : Stmt
     std::vector<std::shared_ptr<Stmt>> thenBlock;
     std::vector<std::shared_ptr<Stmt>> elseBlock;
     ConditionalStatement() { kind = NodeType::ConditionalStatement; }
+};
+
+struct StringLiteral : Expr
+{
+    std::string value;
+    StringLiteral(const std::string &v) : value(v) { kind = NodeType::StringLiteral; }
 };
 
 #endif

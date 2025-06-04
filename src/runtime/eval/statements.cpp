@@ -37,6 +37,11 @@ std::shared_ptr<RuntimeVal> evalPrintStatement(std::shared_ptr<PrintStatement> p
     {
         std::cout << "zip" << std::endl;
     }
+    else if (val->_type == ValueType::String)
+    {
+        auto s = std::static_pointer_cast<StringVal>(val);
+        std::cout << s->val << std::endl;
+    }
     else
     {
         std::cout << "[object]" << std::endl;

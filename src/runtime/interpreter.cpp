@@ -12,6 +12,8 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         return std::make_shared<NumberVal>(std::static_pointer_cast<NumericLiteral>(astNode)->value);
     case NodeType::BooleanLiteral:
         return std::make_shared<BooleanVal>(std::static_pointer_cast<BooleanLiteral>(astNode)->value);
+    case NodeType::StringLiteral:
+        return std::make_shared<StringVal>(std::static_pointer_cast<StringLiteral>(astNode)->value);
     case NodeType::NullLiteral:
         return mkNull();
     case NodeType::Identifier:
