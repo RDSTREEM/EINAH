@@ -116,6 +116,11 @@ private:
      * @return The parsed conditional statement node.
      */
     std::shared_ptr<Stmt> parseConditionalStatement();
+    /**
+     * @brief Parse a while loop (while ... do ... end)
+     * @return The parsed while loop node.
+     */
+    std::shared_ptr<Stmt> parseWhileLoop();
 
 public:
     /**

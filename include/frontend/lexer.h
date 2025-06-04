@@ -46,6 +46,8 @@ enum class TokenType
     EOFTk,        // end of file
     AngleOpen,    // '<' used as a delimiter (not relational)
     AngleClose,   // '>' used as a delimiter (not relational)
+    Twirl,        // 'twirl' while loop keyword
+    Spin,         // 'spin' while loop block keyword
 };
 
 /**
@@ -68,6 +70,8 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"whisper", TokenType::Whisper},
     {"then", TokenType::Then},
     {"or", TokenType::OrKeyword},
+    {"twirl", TokenType::Twirl},
+    {"spin", TokenType::Spin},
 };
 
 /**

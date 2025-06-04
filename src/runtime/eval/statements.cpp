@@ -84,3 +84,23 @@ std::shared_ptr<RuntimeVal> evalConditionalStatement(std::shared_ptr<Conditional
     }
     return last;
 }
+
+std::shared_ptr<RuntimeVal> evalWhileLoop(std::shared_ptr<WhileLoop> loop, std::shared_ptr<Environment> env)
+{
+    std::shared_ptr<RuntimeVal> last = mkNull();
+    while (true)
+    {
+        auto condVal = evaluate(loop->condition, env);
+        if (condVal->_type != ValueType::Boolean)
+            throw std::runtime_error("Condition in while loop must evaluate to a boolean (yup/nope)");
+        auto b = std::static_pointer_cast<BooleanVal>(condVal);
+        if (!b->val)
+            break;
+        auto blockEnv = std::make_shared<Environment>(env);
+        for (const auto &stmt : loop->body)
+        {
+            last = evaluate(stmt, blockEnv);
+        }
+    }
+    return last;
+}

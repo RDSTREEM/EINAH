@@ -41,6 +41,9 @@ std::shared_ptr<Stmt> Parser::parseStmt()
     case TokenType::Whisper:
         return parseConditionalStatement();
 
+    case TokenType::Twirl:
+        return parseWhileLoop();
+
     default:
         return parseExprStatement();
     }
@@ -392,4 +395,34 @@ Token Parser::expect(TokenType type_, const std::string &err)
         exit(1);
     }
     return prev;
+}
+
+std::shared_ptr<Stmt> Parser::parseWhileLoop()
+{
+    eat();
+    std::shared_ptr<Expr> condition;
+    if (at().type == TokenType::Identifier && at().value == "forever")
+    {
+        eat();
+        condition = std::make_shared<BooleanLiteral>(true);
+    }
+    else
+    {
+        expect(TokenType::AngleOpen, "Expected '<<' before while loop condition");
+        condition = parseExpr();
+        expect(TokenType::AngleClose, "Expected '>>' after while loop condition");
+    }
+    expect(TokenType::Spin, "Expected 'spin' after while condition");
+    expect(TokenType::OpenBracket, "Expected '[' to start while loop body");
+    std::vector<std::shared_ptr<Stmt>> body;
+    while (at().type != TokenType::CloseBracket)
+    {
+        body.push_back(parseStmt());
+    }
+    expect(TokenType::CloseBracket, "Expected ']' after while loop body");
+    expect(TokenType::Tilde, "Expected '~' after while loop");
+    auto loop = std::make_shared<WhileLoop>();
+    loop->condition = condition;
+    loop->body = body;
+    return loop;
 }

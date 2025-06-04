@@ -23,6 +23,7 @@ enum class NodeType
     UnaryExpr,            // Unary operation (e.g., ~!)
     ConditionalStatement, // Conditional (whisper ... then ... or ...~)
     StringLiteral,        // String literal
+    WhileLoop,            // While loop node
 };
 
 /**
@@ -126,6 +127,13 @@ struct StringLiteral : Expr
 {
     std::string value;
     StringLiteral(const std::string &v) : value(v) { kind = NodeType::StringLiteral; }
+};
+
+struct WhileLoop : Stmt
+{
+    std::shared_ptr<Expr> condition;
+    std::vector<std::shared_ptr<Stmt>> body;
+    WhileLoop() { kind = NodeType::WhileLoop; }
 };
 
 #endif

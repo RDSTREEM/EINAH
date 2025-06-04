@@ -37,4 +37,12 @@ std::shared_ptr<RuntimeVal> evalPrintStatement(std::shared_ptr<PrintStatement> p
  */
 std::shared_ptr<RuntimeVal> evalConditionalStatement(std::shared_ptr<ConditionalStatement> condStmt, std::shared_ptr<Environment> env);
 
+/**
+ * @brief Evaluate a while loop node.
+ * @param loop The while loop node to evaluate.
+ * @param env The environment in which to evaluate the loop.
+ * @return std::shared_ptr<RuntimeVal> The result of the loop evaluation (usually null or void).
+ */
+std::shared_ptr<RuntimeVal> evalWhileLoop(std::shared_ptr<WhileLoop> loop, std::shared_ptr<Environment> env);
+
 #endif
