@@ -38,9 +38,9 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
     case NodeType::WhileLoop:
         return evalWhileLoop(std::static_pointer_cast<WhileLoop>(astNode), env);
     case NodeType::Skip:
-        return (evalSkipStatement() == SKIP_SIGNAL) ? mkNull() : evalSkipStatement();
+        throw std::runtime_error("__EINAH_SKIP__");
     case NodeType::Shatter:
-        return (evalShatterStatement() == SHATTER_SIGNAL) ? mkNull() : evalShatterStatement();
+        throw std::runtime_error("__EINAH_SHATTER__");
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << magic_enum::enum_name(astNode->kind) << std::endl;
         exit(1);
