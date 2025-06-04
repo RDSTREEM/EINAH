@@ -59,7 +59,9 @@ std::shared_ptr<Stmt> Parser::parsePrintStatement()
 std::shared_ptr<Stmt> Parser::parseConditionalStatement()
 {
     eat();
+    expect(TokenType::Less, "Expected '<' before condition in whisper statement");
     auto cond = parseExpr();
+    expect(TokenType::Greater, "Expected '>' after condition in whisper statement");
     expect(TokenType::Then, "Expected 'then' after condition in whisper statement");
     expect(TokenType::OpenBracket, "Expected '[' to start then block");
     std::vector<std::shared_ptr<Stmt>> thenBlock;
@@ -85,7 +87,9 @@ std::shared_ptr<Stmt> Parser::parseConditionalStatement()
         }
         else
         {
+            expect(TokenType::Less, "Expected '<' before elif condition");
             auto elifCond = parseExpr();
+            expect(TokenType::Greater, "Expected '>' after elif condition");
             expect(TokenType::Then, "Expected 'then' after elif condition");
             expect(TokenType::OpenBracket, "Expected '[' to start elif block");
             std::vector<std::shared_ptr<Stmt>> elifBlock;
