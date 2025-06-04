@@ -36,74 +36,81 @@ std::shared_ptr<Stmt> Parser::parseStmt()
         return parseVarDeclaration();
 
     case TokenType::Spit:
-    {
-        eat();
-        auto arg = parseExpr();
-        expect(TokenType::Tilde, "Expected tilde (~) after spit statement");
-        auto stmt = std::make_shared<PrintStatement>();
-        stmt->argument = arg;
-        return stmt;
-    }
+        return parsePrintStatement();
+
     case TokenType::Whisper:
-    {
-        eat();
-        auto cond = parseExpr();
-        expect(TokenType::Then, "Expected 'then' after condition in whisper statement");
-        expect(TokenType::OpenBracket, "Expected '[' to start then block");
-        std::vector<std::shared_ptr<Stmt>> thenBlock;
-        while (at().type != TokenType::CloseBracket)
-        {
-            thenBlock.push_back(parseStmt());
-        }
-        expect(TokenType::CloseBracket, "Expected ']' after then block");
-        std::vector<std::pair<std::shared_ptr<Expr>, std::vector<std::shared_ptr<Stmt>>>> elifs;
-        std::vector<std::shared_ptr<Stmt>> elseBlock;
-        while (at().type == TokenType::OrKeyword)
-        {
-            eat();
-            if (at().type == TokenType::OpenBracket)
-            {
-                eat();
-                while (at().type != TokenType::CloseBracket)
-                {
-                    elseBlock.push_back(parseStmt());
-                }
-                expect(TokenType::CloseBracket, "Expected ']' after else block");
-                break;
-            }
-            else
-            {
-                auto elifCond = parseExpr();
-                expect(TokenType::Then, "Expected 'then' after elif condition");
-                expect(TokenType::OpenBracket, "Expected '[' to start elif block");
-                std::vector<std::shared_ptr<Stmt>> elifBlock;
-                while (at().type != TokenType::CloseBracket)
-                {
-                    elifBlock.push_back(parseStmt());
-                }
-                expect(TokenType::CloseBracket, "Expected ']' after elif block");
-                elifs.emplace_back(elifCond, elifBlock);
-            }
-        }
-        expect(TokenType::Tilde, "Expected '~' after conditional statement");
-        std::shared_ptr<ConditionalStatement> current = std::make_shared<ConditionalStatement>();
-        current->condition = cond;
-        current->thenBlock = thenBlock;
-        for (auto it = elifs.rbegin(); it != elifs.rend(); ++it)
-        {
-            auto elif = std::make_shared<ConditionalStatement>();
-            elif->condition = it->first;
-            elif->thenBlock = it->second;
-            elif->elseBlock = elseBlock;
-            elseBlock = {elif};
-        }
-        current->elseBlock = elseBlock;
-        return current;
-    }
+        return parseConditionalStatement();
 
     default:
         return parseExprStatement();
     }
+}
+
+std::shared_ptr<Stmt> Parser::parsePrintStatement()
+{
+    eat();
+    auto arg = parseExpr();
+    expect(TokenType::Tilde, "Expected tilde (~) after spit statement");
+    auto stmt = std::make_shared<PrintStatement>();
+    stmt->argument = arg;
+    return stmt;
+}
+
+std::shared_ptr<Stmt> Parser::parseConditionalStatement()
+{
+    eat();
+    auto cond = parseExpr();
+    expect(TokenType::Then, "Expected 'then' after condition in whisper statement");
+    expect(TokenType::OpenBracket, "Expected '[' to start then block");
+    std::vector<std::shared_ptr<Stmt>> thenBlock;
+    while (at().type != TokenType::CloseBracket)
+    {
+        thenBlock.push_back(parseStmt());
+    }
+    expect(TokenType::CloseBracket, "Expected ']' after then block");
+    std::vector<std::pair<std::shared_ptr<Expr>, std::vector<std::shared_ptr<Stmt>>>> elifs;
+    std::vector<std::shared_ptr<Stmt>> elseBlock;
+    while (at().type == TokenType::OrKeyword)
+    {
+        eat();
+        if (at().type == TokenType::OpenBracket)
+        {
+            eat();
+            while (at().type != TokenType::CloseBracket)
+            {
+                elseBlock.push_back(parseStmt());
+            }
+            expect(TokenType::CloseBracket, "Expected ']' after else block");
+            break;
+        }
+        else
+        {
+            auto elifCond = parseExpr();
+            expect(TokenType::Then, "Expected 'then' after elif condition");
+            expect(TokenType::OpenBracket, "Expected '[' to start elif block");
+            std::vector<std::shared_ptr<Stmt>> elifBlock;
+            while (at().type != TokenType::CloseBracket)
+            {
+                elifBlock.push_back(parseStmt());
+            }
+            expect(TokenType::CloseBracket, "Expected ']' after elif block");
+            elifs.emplace_back(elifCond, elifBlock);
+        }
+    }
+    expect(TokenType::Tilde, "Expected '~' after conditional statement");
+    std::shared_ptr<ConditionalStatement> current = std::make_shared<ConditionalStatement>();
+    current->condition = cond;
+    current->thenBlock = thenBlock;
+    for (auto it = elifs.rbegin(); it != elifs.rend(); ++it)
+    {
+        auto elif = std::make_shared<ConditionalStatement>();
+        elif->condition = it->first;
+        elif->thenBlock = it->second;
+        elif->elseBlock = elseBlock;
+        elseBlock = {elif};
+    }
+    current->elseBlock = elseBlock;
+    return current;
 }
 
 std::shared_ptr<Stmt> Parser::parseExprStatement()

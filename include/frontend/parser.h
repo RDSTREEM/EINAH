@@ -106,6 +106,16 @@ private:
      * @return The parsed relational expression node.
      */
     std::shared_ptr<Expr> parseRelationalExpr();
+    /**
+     * @brief Parse a print statement (spit ... ~)
+     * @return The parsed print statement node.
+     */
+    std::shared_ptr<Stmt> parsePrintStatement();
+    /**
+     * @brief Parse a conditional statement (whisper ...)
+     * @return The parsed conditional statement node.
+     */
+    std::shared_ptr<Stmt> parseConditionalStatement();
 
 public:
     /**
