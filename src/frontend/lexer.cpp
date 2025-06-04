@@ -79,7 +79,7 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         }
         else if (src.size() >= 2 && src[0] == '|' && src[1] == '=')
         {
-            tokens.push_back(createToken(TokenType::Or, "|="));
+            tokens.push_back(createToken(TokenType::Or, "|=")); // logical or operator
             src.erase(src.begin(), src.begin() + 2);
         }
         else if (src.size() >= 2 && src[0] == '~' && src[1] == '!')
@@ -105,6 +105,16 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         else if (src.front() == '>')
         {
             tokens.push_back(createToken(TokenType::Greater, ">"));
+            src.erase(src.begin());
+        }
+        else if (src.front() == '[')
+        {
+            tokens.push_back(createToken(TokenType::OpenBracket, "["));
+            src.erase(src.begin());
+        }
+        else if (src.front() == ']')
+        {
+            tokens.push_back(createToken(TokenType::CloseBracket, "]"));
             src.erase(src.begin());
         }
         else if (std::isalpha(src.front())) // identifier or keyword

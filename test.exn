@@ -1,0 +1,7 @@
+root x -> 10~
+
+whisper x < 1 then [
+    spit yup~
+] or [
+    spit nope~
+]~

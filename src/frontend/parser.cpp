@@ -57,23 +57,19 @@ std::shared_ptr<Stmt> Parser::parseStmt()
         }
         expect(TokenType::CloseBracket, "Expected ']' after then block");
         std::vector<std::pair<std::shared_ptr<Expr>, std::vector<std::shared_ptr<Stmt>>>> elifs;
-        while (at().type == TokenType::Or)
+        std::vector<std::shared_ptr<Stmt>> elseBlock;
+        while (at().type == TokenType::OrKeyword)
         {
             eat();
             if (at().type == TokenType::OpenBracket)
             {
-                std::vector<std::shared_ptr<Stmt>> elseBlock;
+                eat();
                 while (at().type != TokenType::CloseBracket)
                 {
                     elseBlock.push_back(parseStmt());
                 }
                 expect(TokenType::CloseBracket, "Expected ']' after else block");
-                expect(TokenType::Tilde, "Expected '~' after conditional statement");
-                auto stmt = std::make_shared<ConditionalStatement>();
-                stmt->condition = cond;
-                stmt->thenBlock = thenBlock;
-                stmt->elseBlock = elseBlock;
-                return stmt;
+                break;
             }
             else
             {
@@ -88,17 +84,6 @@ std::shared_ptr<Stmt> Parser::parseStmt()
                 expect(TokenType::CloseBracket, "Expected ']' after elif block");
                 elifs.emplace_back(elifCond, elifBlock);
             }
-        }
-        std::vector<std::shared_ptr<Stmt>> elseBlock;
-        if (at().type == TokenType::Or)
-        {
-            eat();
-            expect(TokenType::OpenBracket, "Expected '[' to start else block");
-            while (at().type != TokenType::CloseBracket)
-            {
-                elseBlock.push_back(parseStmt());
-            }
-            expect(TokenType::CloseBracket, "Expected ']' after else block");
         }
         expect(TokenType::Tilde, "Expected '~' after conditional statement");
         std::shared_ptr<ConditionalStatement> current = std::make_shared<ConditionalStatement>();
@@ -165,7 +150,7 @@ std::shared_ptr<Expr> Parser::parseExpr()
 std::shared_ptr<Expr> Parser::parseLogicalOrExpr()
 {
     auto left = parseLogicalAndExpr();
-    while (at().type == TokenType::Or)
+    while (at().type == TokenType::OrKeyword)
     {
         eat();
         auto right = parseLogicalAndExpr();

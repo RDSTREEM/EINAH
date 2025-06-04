@@ -39,7 +39,7 @@ enum class TokenType
     GreaterEq,    // '>~' greater than or equal
     Whisper,      // 'whisper' conditional
     Then,         // 'then' keyword
-    Or,           // 'or' keyword
+    OrKeyword,    // 'or'
     OpenBracket,  // '['
     CloseBracket, // ']'
     EOFTk,        // end of file
@@ -64,7 +64,7 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"zip", TokenType::Null},
     {"whisper", TokenType::Whisper},
     {"then", TokenType::Then},
-    {"or", TokenType::Or},
+    {"or", TokenType::OrKeyword},
 };
 
 /**

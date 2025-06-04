@@ -2,6 +2,8 @@
 #include "runtime/interpreter.h"
 #include <iostream>
 #include <third_party/magic_enum.hpp>
+#include <fstream>
+#include <sstream>
 
 namespace printHelper
 {
@@ -264,6 +266,41 @@ void repl()
 
 int main(int argc, char const *argv[])
 {
-    repl();
+    if (argc > 1)
+    {
+        std::string filename = argv[1];
+        if (filename.size() > 4 && filename.substr(filename.size() - 4) == ".exn")
+        {
+            std::ifstream file(filename);
+            if (!file)
+            {
+                std::cerr << "Could not open file: " << filename << std::endl;
+                return 1;
+            }
+            std::stringstream buffer;
+            buffer << file.rdbuf();
+            std::string code = buffer.str();
+            Parser parser;
+            std::shared_ptr<Environment> env = std::make_shared<Environment>();
+            try
+            {
+                std::shared_ptr<Program> program = parser.produceAST(code);
+                evaluate(program, env);
+            }
+            catch (const std::exception &e)
+            {
+                std::cout << "[Error] " << e.what() << std::endl;
+                return 1;
+            }
+            return 0;
+        }
+        else
+        {
+            std::cerr << "Only .exn files can be executed directly." << std::endl;
+            return 1;
+        }
+    }
+    else
+        repl();
     return 0;
 }
