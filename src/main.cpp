@@ -192,26 +192,50 @@ void repl()
     std::string lastInput;
     while (true)
     {
-        std::string input;
-        std::cout << "> ";
-        if (!std::getline(std::cin, input))
+        std::string input, fullInput;
+        std::string prompt = "> ";
+        int bracketCount = 0;
+        bool firstLine = true;
+        do
         {
-            break;
-        }
-        // Trim whitespace
-        input.erase(0, input.find_first_not_of(" \t\n\r"));
-        input.erase(input.find_last_not_of(" \t\n\r") + 1);
-        if (input.empty())
-        {
-            if (lastInput.empty())
-                continue;
-            input = lastInput;
-            std::cout << ">> " << input << std::endl;
-        }
-        else
-        {
-            lastInput = input;
-        }
+            std::cout << prompt;
+            if (!std::getline(std::cin, input))
+                return;
+            // Trim whitespace
+            input.erase(0, input.find_first_not_of(" \t\n\r"));
+            input.erase(input.find_last_not_of(" \t\n\r") + 1);
+            if (firstLine && input.empty())
+            {
+                if (lastInput.empty())
+                    continue;
+                input = lastInput;
+                std::cout << ">> " << input << std::endl;
+            }
+            else if (firstLine)
+            {
+                lastInput = input;
+            }
+            if (!fullInput.empty())
+                fullInput += "\n";
+            fullInput += input;
+            // Count [ and ]~ for multi-line detection
+            for (size_t i = 0; i < input.size(); ++i)
+            {
+                if (input[i] == '[')
+                    bracketCount++;
+                if (input[i] == ']')
+                {
+                    if (i + 1 < input.size() && input[i + 1] == '~')
+                    {
+                        bracketCount--;
+                        ++i;
+                    }
+                }
+            }
+            prompt = bracketCount > 0 ? "... " : "> ";
+            firstLine = false;
+        } while (bracketCount > 0);
+        input = fullInput;
         if (input == "help")
         {
             printHelp();
@@ -254,7 +278,30 @@ void repl()
             }
             if (!isSpit && result)
             {
-                printHelper::printRuntimeVal(result);
+                switch (result->_type)
+                {
+                case ValueType::Number:
+                {
+                    auto num = std::static_pointer_cast<NumberVal>(result);
+                    std::cout << num->val << std::endl;
+                    break;
+                }
+                case ValueType::Boolean:
+                {
+                    auto b = std::static_pointer_cast<BooleanVal>(result);
+                    std::cout << (b->val ? "true" : "false") << std::endl;
+                    break;
+                }
+                case ValueType::Null:
+                {
+                    std::cout << "null" << std::endl;
+                    break;
+                }
+                default:
+                    // For other types, fallback to type name
+                    std::cout << magic_enum::enum_name(result->_type) << std::endl;
+                    break;
+                }
             }
         }
         catch (const std::exception &e)
