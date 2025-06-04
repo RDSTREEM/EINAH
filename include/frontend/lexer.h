@@ -44,6 +44,8 @@ enum class TokenType
     CloseBracket, // ']'
     String,       // #...# string literal
     EOFTk,        // end of file
+    AngleOpen,    // '<' used as a delimiter (not relational)
+    AngleClose,   // '>' used as a delimiter (not relational)
 };
 
 /**

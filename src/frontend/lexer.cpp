@@ -97,6 +97,16 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::GreaterEq, ">~"));
             src.erase(src.begin(), src.begin() + 2);
         }
+        else if (src.size() >= 2 && src[0] == '<' && src[1] == '<')
+        {
+            tokens.push_back(createToken(TokenType::AngleOpen, "<<"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.size() >= 2 && src[0] == '>' && src[1] == '>')
+        {
+            tokens.push_back(createToken(TokenType::AngleClose, ">>"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
         else if (src.front() == '<')
         {
             tokens.push_back(createToken(TokenType::Less, "<"));
