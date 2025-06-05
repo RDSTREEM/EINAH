@@ -126,6 +126,12 @@ private:
      * @return The parsed function declaration node.
      */
     std::shared_ptr<Stmt> parseFunctionDeclaration();
+    /**
+     * @brief Parse function call expressions (foo(...)).
+     * @param callee The function being called.
+     * @return The parsed function call expression node.
+     */
+    std::shared_ptr<Expr> parseCallExpr(std::shared_ptr<Expr> callee);
 
 public:
     /**

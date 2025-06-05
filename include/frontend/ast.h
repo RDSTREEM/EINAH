@@ -29,6 +29,7 @@ enum class NodeType
     ArrayLiteral,         // Array literal node
     IndexExpr,            // Array index expression node
     FunctionDeclaration,  // Named function definition (conjure name <<params>> [ ... ]~)
+    CallExpr,             // Function call (name | args~)
 };
 
 /**
@@ -170,6 +171,13 @@ struct FunctionDeclaration : Stmt
     std::vector<std::string> params;
     std::vector<std::shared_ptr<Stmt>> body;
     FunctionDeclaration() { kind = NodeType::FunctionDeclaration; }
+};
+
+struct CallExpr : Expr
+{
+    std::shared_ptr<Expr> callee;
+    std::vector<std::shared_ptr<Expr>> arguments;
+    CallExpr() { kind = NodeType::CallExpr; }
 };
 
 #endif

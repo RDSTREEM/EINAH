@@ -4,6 +4,9 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <frontend/ast.h>
+
+class Environment;
 
 /**
  * @brief Value types for the Einah runtime.
@@ -14,7 +17,8 @@ enum class ValueType
     Number,  // numeric
     Boolean, // yup/nope
     String,  // string value
-    Array    // array value
+    Array,   // array value
+    Function // function value
 };
 
 /**
@@ -87,6 +91,23 @@ struct ArrayVal : RuntimeVal
 };
 
 /**
+ * @brief Function value.
+ */
+struct FunctionVal : RuntimeVal
+{
+    std::vector<std::string> params;
+    std::vector<std::shared_ptr<Stmt>> body;
+    std::shared_ptr<Environment> closure;
+    FunctionVal(const std::vector<std::string> &params,
+                const std::vector<std::shared_ptr<Stmt>> &body,
+                std::shared_ptr<Environment> closure)
+        : params(params), body(body), closure(closure)
+    {
+        _type = ValueType::Function;
+    }
+};
+
+/**
  * @brief Create a new number value.
  * @param val The numeric value.
  * @return std::shared_ptr<NumberVal> The created number value.
@@ -115,5 +136,13 @@ std::shared_ptr<StringVal> mkString(const std::string &val);
  * @return std::shared_ptr<ArrayVal> The created array value.
  */
 std::shared_ptr<ArrayVal> mkArray(const std::vector<std::shared_ptr<RuntimeVal>> &val);
+/**
+ * @brief Create a new function value.
+ * @param params The function parameters.
+ * @param body The function body.
+ * @param closure The closure for the function.
+ * @return std::shared_ptr<FunctionVal> The created function value.
+ */
+std::shared_ptr<FunctionVal> mkFunction(const std::vector<std::string> &params, const std::vector<std::shared_ptr<Stmt>> &body, std::shared_ptr<Environment> closure);
 
 #endif

@@ -45,6 +45,10 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         return evalArrayLiteral(std::static_pointer_cast<ArrayLiteral>(astNode), env);
     case NodeType::IndexExpr:
         return evalIndexExpr(std::static_pointer_cast<IndexExpr>(astNode), env);
+    case NodeType::FunctionDeclaration:
+        return evalFunctionDeclaration(std::static_pointer_cast<FunctionDeclaration>(astNode), env);
+    case NodeType::CallExpr:
+        return evalCallExpr(std::static_pointer_cast<CallExpr>(astNode), env);
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << magic_enum::enum_name(astNode->kind) << std::endl;
         exit(1);

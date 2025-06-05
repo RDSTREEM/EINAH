@@ -54,6 +54,7 @@ enum class TokenType
     Comma,        // ',' for separating array elements
     Dot,          // '.' for property/array access
     Conjure,      // 'conjure' function definition keyword
+    Pipe,         // '|' function call operator
 };
 
 /**

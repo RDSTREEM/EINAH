@@ -127,6 +127,11 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::CloseBracket, "]"));
             src.erase(src.begin());
         }
+        else if (src.front() == '|')
+        {
+            tokens.push_back(createToken(TokenType::Pipe, "|"));
+            src.erase(src.begin());
+        }
         else if (src.front() == '#')
         {
             src.erase(src.begin());

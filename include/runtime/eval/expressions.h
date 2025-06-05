@@ -79,4 +79,12 @@ std::shared_ptr<RuntimeVal> evalArrayLiteral(std::shared_ptr<ArrayLiteral> arrNo
  */
 std::shared_ptr<RuntimeVal> evalIndexExpr(std::shared_ptr<IndexExpr> idxExpr, std::shared_ptr<Environment> env);
 
+/**
+ * @brief Evaluate a function call expression.
+ * @param call The function call expression node.
+ * @param env The environment in which to evaluate.
+ * @return std::shared_ptr<RuntimeVal> The result of the function call evaluation.
+ */
+std::shared_ptr<RuntimeVal> evalCallExpr(std::shared_ptr<CallExpr> call, std::shared_ptr<Environment> env);
+
 #endif

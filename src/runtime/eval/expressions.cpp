@@ -3,10 +3,6 @@
 #include <math.h>
 #include <iostream>
 
-// Forward declarations for modular functions
-std::shared_ptr<RuntimeVal> evaluateUnaryExpr(const std::string &op, std::shared_ptr<RuntimeVal> operand);
-std::shared_ptr<RuntimeVal> evaluateRelationalBinaryExpr(std::shared_ptr<RuntimeVal> lhs, std::shared_ptr<RuntimeVal> rhs, const std::string &op);
-
 std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop, std::shared_ptr<Environment> env)
 {
     std::shared_ptr<RuntimeVal> lhs = binop->left ? evaluate(binop->left, env) : nullptr;
@@ -83,7 +79,6 @@ std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop
     return mkNull();
 }
 
-// New: unary expression evaluation
 std::shared_ptr<RuntimeVal> evaluateUnaryExpr(const std::string &op, std::shared_ptr<RuntimeVal> operand)
 {
     if (op == "~!")
@@ -100,11 +95,9 @@ std::shared_ptr<RuntimeVal> evaluateUnaryExpr(const std::string &op, std::shared
         }
         return mkBool(false);
     }
-    // Add more unary ops as needed
     return mkNull();
 }
 
-// New: relational binary expression evaluation
 std::shared_ptr<RuntimeVal> evaluateRelationalBinaryExpr(std::shared_ptr<RuntimeVal> lhs, std::shared_ptr<RuntimeVal> rhs, const std::string &op)
 {
     if (!lhs || !rhs || lhs->_type != ValueType::Number || rhs->_type != ValueType::Number)
@@ -192,4 +185,45 @@ std::shared_ptr<RuntimeVal> evalIndexExpr(std::shared_ptr<IndexExpr> idxExpr, st
     if (idx >= arr->val.size())
         throw std::runtime_error("Array index out of bounds");
     return arr->val[idx];
+}
+
+std::shared_ptr<RuntimeVal> evalCallExpr(std::shared_ptr<CallExpr> call, std::shared_ptr<Environment> env)
+{
+    auto calleeVal = evaluate(call->callee, env);
+    if (calleeVal->_type != ValueType::Function)
+    {
+        throw std::runtime_error("Attempted to call a non-function value");
+    }
+    auto func = std::static_pointer_cast<FunctionVal>(calleeVal);
+    std::vector<std::shared_ptr<RuntimeVal>> argVals;
+    for (auto &arg : call->arguments)
+    {
+        argVals.push_back(evaluate(arg, env));
+    }
+    auto funcEnv = std::make_shared<Environment>(func->closure);
+    if (argVals.size() != func->params.size())
+    {
+        throw std::runtime_error("Function argument count mismatch");
+    }
+    for (size_t i = 0; i < func->params.size(); ++i)
+    {
+        funcEnv->declareVar(func->params[i], argVals[i], true);
+    }
+    std::shared_ptr<RuntimeVal> last = mkNull();
+    try
+    {
+        for (auto &stmt : func->body)
+        {
+            last = evaluate(stmt, funcEnv);
+        }
+    }
+    catch (const std::runtime_error &e)
+    {
+        if (std::string(e.what()).rfind("__EINAH_RETURN__", 0) == 0)
+        {
+            return last;
+        }
+        throw;
+    }
+    return last;
 }

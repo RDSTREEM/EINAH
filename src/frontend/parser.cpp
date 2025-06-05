@@ -404,7 +404,6 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         std::cerr << "Unexpected token found during parsing: " << at();
         exit(-1);
     }
-    // Handle arr.0 chaining
     while (at().type == TokenType::Dot)
     {
         eat();
@@ -421,6 +420,10 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
             std::cerr << "Expected number after dot for array indexing" << std::endl;
             exit(1);
         }
+    }
+    if (at().type == TokenType::Pipe)
+    {
+        expr = parseCallExpr(expr);
     }
     return expr;
 }
@@ -520,4 +523,20 @@ std::shared_ptr<Stmt> Parser::parseFunctionDeclaration()
     func->params = params;
     func->body = body;
     return func;
+}
+
+std::shared_ptr<Expr> Parser::parseCallExpr(std::shared_ptr<Expr> callee)
+{
+    auto call = std::make_shared<CallExpr>();
+    call->callee = callee;
+    eat();
+    std::vector<std::shared_ptr<Expr>> args;
+    while (at().type != TokenType::Tilde)
+    {
+        args.push_back(parseExpr());
+        if (at().type == TokenType::Comma)
+            eat();
+    }
+    call->arguments = args;
+    return call;
 }

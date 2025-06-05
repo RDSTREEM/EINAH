@@ -108,6 +108,13 @@ std::shared_ptr<RuntimeVal> evalWhileLoop(std::shared_ptr<WhileLoop> loop, std::
     return last;
 }
 
+std::shared_ptr<RuntimeVal> evalFunctionDeclaration(std::shared_ptr<FunctionDeclaration> funcDecl, std::shared_ptr<Environment> env)
+{
+    auto funcVal = mkFunction(funcDecl->params, funcDecl->body, env);
+    env->declareVar(funcDecl->name, funcVal, true);
+    return funcVal;
+}
+
 void printValue(const std::shared_ptr<RuntimeVal> &val)
 {
     switch (val->_type)

@@ -24,3 +24,8 @@ std::shared_ptr<ArrayVal> mkArray(const std::vector<std::shared_ptr<RuntimeVal>>
 {
     return std::make_shared<ArrayVal>(val);
 }
+
+std::shared_ptr<FunctionVal> mkFunction(const std::vector<std::string> &params, const std::vector<std::shared_ptr<Stmt>> &body, std::shared_ptr<Environment> closure)
+{
+    return std::make_shared<FunctionVal>(params, body, closure);
+}
