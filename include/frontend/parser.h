@@ -137,6 +137,11 @@ private:
      * @return The parsed return statement node.
      */
     std::shared_ptr<Stmt> parseReturnStatement();
+    /**
+     * @brief Parse a block with a new scope (environment)
+     * @return The parsed block.
+     */
+    std::shared_ptr<Stmt> parseBlockStatement();
 
 public:
     /**

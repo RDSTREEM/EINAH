@@ -31,6 +31,7 @@ enum class NodeType
     FunctionDeclaration,  // Named function definition (conjure name <<params>> [ ... ]~)
     CallExpr,             // Function call (name | args~)
     ReturnStatement,      // Return statement (zipback value~)
+    BlockStatement,       // Add this line for block node
 };
 
 /**
@@ -185,6 +186,12 @@ struct ReturnStatement : Stmt
 {
     std::shared_ptr<Expr> argument;
     ReturnStatement() { kind = NodeType::ReturnStatement; }
+};
+
+struct BlockStatement : Stmt
+{
+    std::vector<std::shared_ptr<Stmt>> body;
+    BlockStatement(const std::vector<std::shared_ptr<Stmt>> &b) : body(b) { kind = NodeType::BlockStatement; }
 };
 
 #endif

@@ -59,4 +59,12 @@ std::shared_ptr<RuntimeVal> evalFunctionDeclaration(std::shared_ptr<FunctionDecl
  */
 void printValue(const std::shared_ptr<RuntimeVal> &val);
 
+/**
+ * @brief Evaluate a block statement node (enclosed in braces).
+ * @param block The block statement node to evaluate.
+ * @param env The environment in which to evaluate the block.
+ * @return std::shared_ptr<RuntimeVal> The result of the block statement evaluation (usually null or void).
+ */
+std::shared_ptr<RuntimeVal> evaluateBlockStatement(std::shared_ptr<BlockStatement> block, std::shared_ptr<Environment> env);
+
 #endif

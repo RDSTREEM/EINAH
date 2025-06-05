@@ -60,6 +60,9 @@ std::shared_ptr<Stmt> Parser::parseStmt()
     case TokenType::Return:
         return parseReturnStatement();
 
+    case TokenType::OpenBracket:
+        return parseBlockStatement();
+
     default:
         return parseExprStatement();
     }
@@ -560,4 +563,16 @@ std::shared_ptr<Stmt> Parser::parseReturnStatement()
     auto stmt = std::make_shared<ReturnStatement>();
     stmt->argument = arg;
     return stmt;
+}
+
+std::shared_ptr<Stmt> Parser::parseBlockStatement()
+{
+    eat();
+    std::vector<std::shared_ptr<Stmt>> body;
+    while (at().type != TokenType::CloseBracket)
+    {
+        body.push_back(parseStmt());
+    }
+    expect(TokenType::CloseBracket, "Expected ']' after block");
+    return std::make_shared<BlockStatement>(body);
 }

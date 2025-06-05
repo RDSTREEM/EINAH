@@ -1,5 +1,6 @@
 #include "runtime/eval/statements.h"
 #include "runtime/interpreter.h"
+#include "frontend/ast.h"
 #include <iostream>
 #include <stdexcept>
 
@@ -113,6 +114,17 @@ std::shared_ptr<RuntimeVal> evalFunctionDeclaration(std::shared_ptr<FunctionDecl
     auto funcVal = mkFunction(funcDecl->params, funcDecl->body, env);
     env->declareVar(funcDecl->name, funcVal, true);
     return funcVal;
+}
+
+std::shared_ptr<RuntimeVal> evaluateBlockStatement(std::shared_ptr<BlockStatement> block, std::shared_ptr<Environment> env)
+{
+    auto blockEnv = std::make_shared<Environment>(env);
+    std::shared_ptr<RuntimeVal> last = mkNull();
+    for (const auto &stmt : block->body)
+    {
+        last = evaluate(stmt, blockEnv);
+    }
+    return last;
 }
 
 void printValue(const std::shared_ptr<RuntimeVal> &val)
