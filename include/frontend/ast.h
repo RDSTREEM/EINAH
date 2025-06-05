@@ -28,6 +28,7 @@ enum class NodeType
     Shatter,              // Break statement
     ArrayLiteral,         // Array literal node
     IndexExpr,            // Array index expression node
+    FunctionDeclaration,  // Named function definition (conjure name <<params>> [ ... ]~)
 };
 
 /**
@@ -161,6 +162,14 @@ struct IndexExpr : Expr
     std::shared_ptr<Expr> array;
     std::shared_ptr<Expr> index;
     IndexExpr() { kind = NodeType::IndexExpr; }
+};
+
+struct FunctionDeclaration : Stmt
+{
+    std::string name;
+    std::vector<std::string> params;
+    std::vector<std::shared_ptr<Stmt>> body;
+    FunctionDeclaration() { kind = NodeType::FunctionDeclaration; }
 };
 
 #endif

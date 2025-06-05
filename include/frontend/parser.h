@@ -121,6 +121,11 @@ private:
      * @return The parsed while loop node.
      */
     std::shared_ptr<Stmt> parseWhileLoop();
+    /**
+     * @brief Parse a function declaration (named function).
+     * @return The parsed function declaration node.
+     */
+    std::shared_ptr<Stmt> parseFunctionDeclaration();
 
 public:
     /**

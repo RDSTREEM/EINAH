@@ -54,6 +54,9 @@ std::shared_ptr<Stmt> Parser::parseStmt()
         expect(TokenType::Tilde, "Expected '~' after shatter statement");
         return std::make_shared<ShatterStatement>();
 
+    case TokenType::Conjure:
+        return parseFunctionDeclaration();
+
     default:
         return parseExprStatement();
     }
@@ -482,4 +485,39 @@ std::shared_ptr<Stmt> Parser::parseWhileLoop()
     loop->condition = condition;
     loop->body = body;
     return loop;
+}
+
+std::shared_ptr<Stmt> Parser::parseFunctionDeclaration()
+{
+    eat();
+    const Token name = expect(TokenType::Identifier, "Expected function name after 'conjure'.");
+    expect(TokenType::AngleOpen, "Expected '<<' before parameter list in function definition.");
+    std::vector<std::string> params;
+    while (at().type != TokenType::AngleClose)
+    {
+        if (at().type == TokenType::Identifier)
+        {
+            params.push_back(eat().value);
+            if (at().type == TokenType::Comma)
+                eat();
+        }
+        else
+        {
+            throw std::runtime_error("Expected parameter name in function definition.");
+        }
+    }
+    expect(TokenType::AngleClose, "Expected '>>' after parameter list in function definition.");
+    expect(TokenType::OpenBracket, "Expected '[' to start function body.");
+    std::vector<std::shared_ptr<Stmt>> body;
+    while (at().type != TokenType::CloseBracket)
+    {
+        body.push_back(parseStmt());
+    }
+    expect(TokenType::CloseBracket, "Expected ']' to end function body.");
+    expect(TokenType::Tilde, "Expected '~' after function definition.");
+    auto func = std::make_shared<FunctionDeclaration>();
+    func->name = name.value;
+    func->params = params;
+    func->body = body;
+    return func;
 }

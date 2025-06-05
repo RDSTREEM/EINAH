@@ -53,6 +53,7 @@ enum class TokenType
     Dollar,       // '$' for array literal delimiters
     Comma,        // ',' for separating array elements
     Dot,          // '.' for property/array access
+    Conjure,      // 'conjure' function definition keyword
 };
 
 /**
@@ -79,6 +80,7 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"spin", TokenType::Spin},
     {"skip", TokenType::Skip},
     {"shatter", TokenType::Shatter},
+    {"conjure", TokenType::Conjure},
 };
 
 /**
