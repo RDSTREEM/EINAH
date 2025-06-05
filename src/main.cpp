@@ -1,5 +1,6 @@
 #include "frontend/parser.h"
 #include "runtime/interpreter.h"
+#include "runtime/native.h"
 #include <iostream>
 #include <third_party/magic_enum.hpp>
 #include <fstream>
@@ -183,10 +184,9 @@ void clearScreen()
 #endif
 }
 
-void repl()
+void repl(std::shared_ptr<Environment> env)
 {
     Parser parser;
-    std::shared_ptr<Environment> env = std::make_shared<Environment>();
     printWelcome();
 
     std::string lastInput;
@@ -329,6 +329,7 @@ int main(int argc, char const *argv[])
             std::string code = buffer.str();
             Parser parser;
             std::shared_ptr<Environment> env = std::make_shared<Environment>();
+            registerNativeFunctions(env);
             try
             {
                 std::shared_ptr<Program> program = parser.produceAST(code);
@@ -348,6 +349,10 @@ int main(int argc, char const *argv[])
         }
     }
     else
-        repl();
+    {
+        std::shared_ptr<Environment> env = std::make_shared<Environment>();
+        registerNativeFunctions(env);
+        repl(env);
+    }
     return 0;
 }

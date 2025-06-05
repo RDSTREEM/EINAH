@@ -1,5 +1,6 @@
 #include "runtime/eval/expressions.h"
 #include "runtime/interpreter.h"
+#include "runtime/values.h"
 #include <math.h>
 #include <iostream>
 
@@ -193,6 +194,20 @@ std::shared_ptr<RuntimeVal> evalCallExpr(std::shared_ptr<CallExpr> call, std::sh
     if (calleeVal->_type != ValueType::Function)
     {
         throw std::runtime_error("Attempted to call a non-function value");
+    }
+    auto native = std::dynamic_pointer_cast<NativeFunctionVal>(calleeVal);
+    if (native)
+    {
+        std::vector<std::shared_ptr<RuntimeVal>> argVals;
+        for (auto &arg : call->arguments)
+        {
+            argVals.push_back(evaluate(arg, env));
+        }
+        if (argVals.size() != native->arity)
+        {
+            throw std::runtime_error("Native function argument count mismatch");
+        }
+        return native->fn(argVals);
     }
     auto func = std::static_pointer_cast<FunctionVal>(calleeVal);
     std::vector<std::shared_ptr<RuntimeVal>> argVals;

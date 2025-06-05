@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <frontend/ast.h>
+#include <functional>
 
 class Environment;
 
@@ -119,6 +120,19 @@ struct ObjectVal : RuntimeVal
     {
         _type = ValueType::Object;
     }
+};
+
+/**
+ * @brief Native function value.
+ */
+struct NativeFunctionVal : RuntimeVal
+{
+    std::string name;
+    size_t arity;
+    std::function<std::shared_ptr<RuntimeVal>(const std::vector<std::shared_ptr<RuntimeVal>> &)> fn;
+    NativeFunctionVal(const std::string &n, size_t a,
+                      std::function<std::shared_ptr<RuntimeVal>(const std::vector<std::shared_ptr<RuntimeVal>> &)> f)
+        : name(n), arity(a), fn(f) { _type = ValueType::Function; }
 };
 
 /**
