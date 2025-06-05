@@ -45,4 +45,10 @@ std::shared_ptr<RuntimeVal> evalConditionalStatement(std::shared_ptr<Conditional
  */
 std::shared_ptr<RuntimeVal> evalWhileLoop(std::shared_ptr<WhileLoop> loop, std::shared_ptr<Environment> env);
 
+/**
+ * @brief Recursively print a RuntimeVal to std::cout in Einah syntax, including arrays and nested arrays.
+ * @param val The runtime value to print.
+ */
+void printValue(const std::shared_ptr<RuntimeVal> &val);
+
 #endif

@@ -50,6 +50,8 @@ enum class TokenType
     Spin,         // 'spin' while loop block keyword
     Skip,         // 'skip' continue statement
     Shatter,      // 'shatter' break statement
+    Dollar,       // '$' for array literal delimiters
+    Comma,        // ',' for separating array elements
 };
 
 /**

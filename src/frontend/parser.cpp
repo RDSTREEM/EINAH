@@ -368,6 +368,29 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         auto str = std::make_shared<StringLiteral>(token.value);
         return str;
     }
+    case TokenType::Dollar:
+    {
+        eat();
+        std::vector<std::shared_ptr<Expr>> elements;
+        if (at().type != TokenType::Dollar)
+        {
+            while (true)
+            {
+                elements.push_back(parseExpr());
+                if (at().type == TokenType::Comma)
+                {
+                    eat();
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        expect(TokenType::Dollar, "Expected closing '$' for array literal");
+        auto arr = std::make_shared<ArrayLiteral>(elements);
+        return arr;
+    }
     default:
         std::cerr << "Unexpected token found during parsing: " << at();
         exit(-1);

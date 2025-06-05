@@ -186,6 +186,16 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         {
             src.erase(src.begin());
         }
+        else if (src.front() == '$')
+        {
+            tokens.push_back(createToken(TokenType::Dollar, "$"));
+            src.erase(src.begin());
+        }
+        else if (src.front() == ',')
+        {
+            tokens.push_back(createToken(TokenType::Comma, ","));
+            src.erase(src.begin());
+        }
         else
         {
             std::cerr << "Unreconized character found in source: " << src.front() << std::endl;

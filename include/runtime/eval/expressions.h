@@ -63,4 +63,12 @@ std::shared_ptr<RuntimeVal> evaluateRelationalBinaryExpr(std::shared_ptr<Runtime
  */
 std::shared_ptr<RuntimeVal> evalUnaryExpr(std::shared_ptr<UnaryExpr> unaryNode, std::shared_ptr<Environment> env);
 
+/**
+ * @brief Evaluate an array literal expression.
+ * @param arrNode The array literal AST node.
+ * @param env The environment in which to evaluate.
+ * @return std::shared_ptr<RuntimeVal> The resulting array value.
+ */
+std::shared_ptr<RuntimeVal> evalArrayLiteral(std::shared_ptr<ArrayLiteral> arrNode, std::shared_ptr<Environment> env);
+
 #endif

@@ -24,29 +24,8 @@ std::shared_ptr<RuntimeVal> evaluateVarDeclaration(std::shared_ptr<VarDeclaratio
 std::shared_ptr<RuntimeVal> evalPrintStatement(std::shared_ptr<PrintStatement> printStmt, std::shared_ptr<Environment> env)
 {
     auto val = evaluate(printStmt->argument, env);
-    if (val->_type == ValueType::Number)
-    {
-        auto num = std::static_pointer_cast<NumberVal>(val);
-        std::cout << num->val << std::endl;
-    }
-    else if (val->_type == ValueType::Boolean)
-    {
-        auto b = std::static_pointer_cast<BooleanVal>(val);
-        std::cout << (b->val ? "yup" : "nope") << std::endl;
-    }
-    else if (val->_type == ValueType::Null)
-    {
-        std::cout << "zip" << std::endl;
-    }
-    else if (val->_type == ValueType::String)
-    {
-        auto s = std::static_pointer_cast<StringVal>(val);
-        std::cout << s->val << std::endl;
-    }
-    else
-    {
-        std::cout << "[object]" << std::endl;
-    }
+    printValue(val);
+    std::cout << std::endl;
     return mkNull();
 }
 
@@ -127,4 +106,49 @@ std::shared_ptr<RuntimeVal> evalWhileLoop(std::shared_ptr<WhileLoop> loop, std::
         }
     }
     return last;
+}
+
+void printValue(const std::shared_ptr<RuntimeVal> &val)
+{
+    switch (val->_type)
+    {
+    case ValueType::Number:
+    {
+        auto num = std::static_pointer_cast<NumberVal>(val);
+        std::cout << num->val;
+        break;
+    }
+    case ValueType::Boolean:
+    {
+        auto b = std::static_pointer_cast<BooleanVal>(val);
+        std::cout << (b->val ? "yup" : "nope");
+        break;
+    }
+    case ValueType::Null:
+    {
+        std::cout << "zip";
+        break;
+    }
+    case ValueType::String:
+    {
+        auto s = std::static_pointer_cast<StringVal>(val);
+        std::cout << '#' << s->val << '#';
+        break;
+    }
+    case ValueType::Array:
+    {
+        auto arr = std::static_pointer_cast<ArrayVal>(val);
+        std::cout << "$[";
+        for (size_t i = 0; i < arr->val.size(); ++i)
+        {
+            printValue(arr->val[i]);
+            if (i + 1 < arr->val.size())
+                std::cout << ", ";
+        }
+        std::cout << "]$";
+        break;
+    }
+    default:
+        std::cout << "[object]";
+    }
 }

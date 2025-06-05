@@ -19,3 +19,8 @@ std::shared_ptr<StringVal> mkString(const std::string &val)
 {
     return std::make_shared<StringVal>(val);
 }
+
+std::shared_ptr<ArrayVal> mkArray(const std::vector<std::shared_ptr<RuntimeVal>> &val)
+{
+    return std::make_shared<ArrayVal>(val);
+}

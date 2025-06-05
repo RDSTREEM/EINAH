@@ -26,6 +26,7 @@ enum class NodeType
     WhileLoop,            // While loop node
     Skip,                 // Continue statement
     Shatter,              // Break statement
+    ArrayLiteral,         // Array literal node
 };
 
 /**
@@ -146,6 +147,12 @@ struct SkipStatement : Stmt
 struct ShatterStatement : Stmt
 {
     ShatterStatement() { kind = NodeType::Shatter; }
+};
+
+struct ArrayLiteral : Expr
+{
+    std::vector<std::shared_ptr<Expr>> elements;
+    ArrayLiteral(const std::vector<std::shared_ptr<Expr>> &elems) : elements(elems) { kind = NodeType::ArrayLiteral; }
 };
 
 #endif

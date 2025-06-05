@@ -168,3 +168,13 @@ std::shared_ptr<RuntimeVal> evalUnaryExpr(std::shared_ptr<UnaryExpr> unaryNode, 
     auto argVal = evaluate(unaryNode->argument, env);
     return evaluateUnaryExpr(unaryNode->op, argVal);
 }
+
+std::shared_ptr<RuntimeVal> evalArrayLiteral(std::shared_ptr<ArrayLiteral> arrNode, std::shared_ptr<Environment> env)
+{
+    std::vector<std::shared_ptr<RuntimeVal>> elements;
+    for (const auto &expr : arrNode->elements)
+    {
+        elements.push_back(evaluate(expr, env));
+    }
+    return mkArray(elements);
+}

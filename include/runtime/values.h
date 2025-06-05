@@ -3,6 +3,7 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 /**
  * @brief Value types for the Einah runtime.
@@ -12,7 +13,8 @@ enum class ValueType
     Null,    // zip
     Number,  // numeric
     Boolean, // yup/nope
-    String   // string value
+    String,  // string value
+    Array    // array value
 };
 
 /**
@@ -73,6 +75,18 @@ struct StringVal : RuntimeVal
 };
 
 /**
+ * @brief Array value.
+ */
+struct ArrayVal : RuntimeVal
+{
+    std::vector<std::shared_ptr<RuntimeVal>> val; // The array elements.
+    ArrayVal(const std::vector<std::shared_ptr<RuntimeVal>> &v) : val(v)
+    {
+        _type = ValueType::Array;
+    }
+};
+
+/**
  * @brief Create a new number value.
  * @param val The numeric value.
  * @return std::shared_ptr<NumberVal> The created number value.
@@ -95,5 +109,11 @@ std::shared_ptr<BooleanVal> mkBool(bool val);
  * @return std::shared_ptr<StringVal> The created string value.
  */
 std::shared_ptr<StringVal> mkString(const std::string &val);
+/**
+ * @brief Create a new array value.
+ * @param val The array elements.
+ * @return std::shared_ptr<ArrayVal> The created array value.
+ */
+std::shared_ptr<ArrayVal> mkArray(const std::vector<std::shared_ptr<RuntimeVal>> &val);
 
 #endif
