@@ -47,6 +47,17 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Plus, "+"));
             src.erase(src.begin());
         }
+        else if (src.front() == '-' && src.size() > 1 && std::isdigit(src[1]))
+        {
+            std::string number = "-";
+            src.erase(src.begin());
+            while (!src.empty() && (std::isdigit(src.front()) || (src.front() == '.' && number.find('.') == std::string::npos)))
+            {
+                number += src.front();
+                src.erase(src.begin());
+            }
+            tokens.push_back(createToken(TokenType::Number, number));
+        }
         else if (src.front() == '-')
         {
             tokens.push_back(createToken(TokenType::Minus, "-"));
