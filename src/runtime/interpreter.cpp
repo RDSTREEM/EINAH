@@ -57,6 +57,10 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         return evalObjectLiteral(std::static_pointer_cast<ObjectLiteral>(astNode), env);
     case NodeType::ObjectAccess:
         return evalObjectAccess(std::static_pointer_cast<ObjectAccess>(astNode), env);
+    case NodeType::ForLoop:
+        return evalForLoop(std::static_pointer_cast<ForLoop>(astNode), env);
+    case NodeType::ForEachLoop:
+        return evalForEachLoop(std::static_pointer_cast<ForEachLoop>(astNode), env);
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << magic_enum::enum_name(astNode->kind) << std::endl;
         exit(1);

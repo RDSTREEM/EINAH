@@ -67,4 +67,20 @@ void printValue(const std::shared_ptr<RuntimeVal> &val);
  */
 std::shared_ptr<RuntimeVal> evaluateBlockStatement(std::shared_ptr<BlockStatement> block, std::shared_ptr<Environment> env);
 
+/**
+ * @brief Evaluate a for loop node.
+ * @param loop The for loop node to evaluate.
+ * @param env The environment in which to evaluate the loop.
+ * @return std::shared_ptr<RuntimeVal> The result of the for loop evaluation (usually null or void).
+ */
+std::shared_ptr<RuntimeVal> evalForLoop(std::shared_ptr<ForLoop> loop, std::shared_ptr<Environment> env);
+
+/**
+ * @brief Evaluate a for-each loop node.
+ * @param loop The for-each loop node to evaluate.
+ * @param env The environment in which to evaluate the loop.
+ * @return std::shared_ptr<RuntimeVal> The result of the for-each loop evaluation (usually null or void).
+ */
+std::shared_ptr<RuntimeVal> evalForEachLoop(std::shared_ptr<ForEachLoop> loop, std::shared_ptr<Environment> env);
+
 #endif

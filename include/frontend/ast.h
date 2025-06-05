@@ -34,6 +34,8 @@ enum class NodeType
     BlockStatement,       // Add this line for block node
     ObjectLiteral,        // Object literal node
     ObjectAccess,         // Object property access node
+    ForLoop,              // For loop node (cartwheel)
+    ForEachLoop           // For-each loop node (drift)
 };
 
 /**
@@ -206,6 +208,23 @@ struct ObjectAccess : Expr
     std::shared_ptr<Expr> object;
     std::shared_ptr<Expr> key;
     ObjectAccess() { kind = NodeType::ObjectAccess; }
+};
+struct ForLoop : Stmt
+{
+    std::string iterator;
+    std::shared_ptr<Expr> start;
+    std::shared_ptr<Expr> end;
+    std::shared_ptr<Expr> step;
+    std::vector<std::shared_ptr<Stmt>> body;
+    ForLoop() { kind = NodeType::ForLoop; }
+};
+
+struct ForEachLoop : Stmt
+{
+    std::string iterator;
+    std::shared_ptr<Expr> iterable;
+    std::vector<std::shared_ptr<Stmt>> body;
+    ForEachLoop() { kind = NodeType::ForEachLoop; }
 };
 
 #endif

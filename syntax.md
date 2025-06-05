@@ -24,10 +24,10 @@
 | **Conditional**   | `whisper <cond> then [ ... ] or [ ... ]~`        | If / else block                |
 | **While Loop**    | `twirl <cond> spin [ ... ]~`                     | While loop                     |
 | **Infinite Loop** | `twirl forever spin [ ... ]~`                    | Loop forever                   |
-| **Break Loop**    | `shatter~`                                  | Break out of current loop      |
-| **Continue**      | `skip~`                                     | Continue next loop iteration   |
-| **For Loop**      | `cartwheel from !i! to !n! spin [ ... ]~`        | Standard indexed loop          |
-| **For-Each**      | `drift through $array$ catching $item$ [ ... ]~` | Iterate over array or iterable |
+| **Break Loop**    | `shatter~`                                       | Break out of current loop      |
+| **Continue**      | `skip~`                                          | Continue next loop iteration   |
+| **For Loop**      | `cartwheel i => 10 ~> 0 by -2 spin  [ ... ]~`    | Standard indexed loop          |
+| **For-Each**      | `drift through arr catching item [ ... ]~`       | Iterate over array or iterable |
 
 ---
 

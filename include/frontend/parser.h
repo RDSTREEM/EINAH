@@ -153,6 +153,16 @@ private:
      * @return The parsed expr access expression node.
      */
     std::shared_ptr<Expr> parseChainedAccess(std::shared_ptr<Expr> expr);
+    /**
+     * @brief Parse a for loop
+     * @return The parsed for loop node.
+     */
+    std::shared_ptr<Stmt> parseForLoop();
+    /**
+     * @brief Parse a for-each loop
+     * @return The parsed for-each loop node.
+     */
+    std::shared_ptr<Stmt> parseForEachLoop();
 
 public:
     /**

@@ -63,6 +63,12 @@ std::shared_ptr<Stmt> Parser::parseStmt()
     case TokenType::OpenBracket:
         return parseBlockStatement();
 
+    case TokenType::Cartwheel:
+        return parseForLoop();
+
+    case TokenType::Drift:
+        return parseForEachLoop();
+
     default:
         return parseExprStatement();
     }
@@ -635,4 +641,61 @@ std::shared_ptr<Expr> Parser::parseObjectLiteral()
     }
     expect(TokenType::At, "Expected closing '@' for object literal");
     return std::make_shared<ObjectLiteral>(properties);
+}
+
+std::shared_ptr<Stmt> Parser::parseForLoop()
+{
+    eat();
+    Token ident = expect(TokenType::Identifier, "Expected iterator variable after 'cartwheel'");
+    expect(TokenType::FatArrow, "Expected '=>' after iterator variable");
+    expect(TokenType::From, "Expected 'from' after '=>' in for loop");
+    auto start = parseExpr();
+    expect(TokenType::To, "Expected 'to' after start expression");
+    auto end = parseExpr();
+    std::shared_ptr<Expr> step;
+    if (at().type == TokenType::By)
+    {
+        eat();
+        step = parseExpr();
+    }
+    else
+        step = std::make_shared<NumericLiteral>(1);
+    expect(TokenType::Spin, "Expected 'spin' after for loop header");
+    expect(TokenType::OpenBracket, "Expected '[' to start for loop body");
+    std::vector<std::shared_ptr<Stmt>> body;
+    while (at().type != TokenType::CloseBracket)
+    {
+        body.push_back(parseStmt());
+    }
+    expect(TokenType::CloseBracket, "Expected ']' after for loop body");
+    expect(TokenType::Tilde, "Expected '~' after for loop");
+    auto loop = std::make_shared<ForLoop>();
+    loop->iterator = ident.value;
+    loop->start = start;
+    loop->end = end;
+    loop->step = step;
+    loop->body = body;
+    return loop;
+}
+
+std::shared_ptr<Stmt> Parser::parseForEachLoop()
+{
+    eat();
+    expect(TokenType::Through, "Expected 'through' after 'drift'");
+    auto iterable = parseExpr();
+    expect(TokenType::Catching, "Expected 'catching' after iterable expression");
+    Token ident = expect(TokenType::Identifier, "Expected iterator variable after 'catching'");
+    expect(TokenType::OpenBracket, "Expected '[' to start for-each loop body");
+    std::vector<std::shared_ptr<Stmt>> body;
+    while (at().type != TokenType::CloseBracket)
+    {
+        body.push_back(parseStmt());
+    }
+    expect(TokenType::CloseBracket, "Expected ']' after for-each loop body");
+    expect(TokenType::Tilde, "Expected '~' after for-each loop");
+    auto loop = std::make_shared<ForEachLoop>();
+    loop->iterator = ident.value;
+    loop->iterable = iterable;
+    loop->body = body;
+    return loop;
 }

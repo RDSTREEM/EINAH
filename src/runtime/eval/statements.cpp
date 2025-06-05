@@ -127,6 +127,94 @@ std::shared_ptr<RuntimeVal> evaluateBlockStatement(std::shared_ptr<BlockStatemen
     return last;
 }
 
+std::shared_ptr<RuntimeVal> evalForLoop(std::shared_ptr<ForLoop> loop, std::shared_ptr<Environment> env)
+{
+    auto startVal = evaluate(loop->start, env);
+    auto endVal = evaluate(loop->end, env);
+    auto stepVal = evaluate(loop->step, env);
+    if (startVal->_type != ValueType::Number || endVal->_type != ValueType::Number || stepVal->_type != ValueType::Number)
+        throw std::runtime_error("For loop bounds and step must be numbers");
+    int start = static_cast<int>(std::static_pointer_cast<NumberVal>(startVal)->val);
+    int end = static_cast<int>(std::static_pointer_cast<NumberVal>(endVal)->val);
+    int step = static_cast<int>(std::static_pointer_cast<NumberVal>(stepVal)->val);
+    if (step == 0)
+        throw std::runtime_error("For loop step cannot be zero");
+    std::shared_ptr<RuntimeVal> last = mkNull();
+    for (int i = start; (step > 0) ? (i <= end) : (i >= end); i += step)
+    {
+        auto loopEnv = std::make_shared<Environment>(env);
+        loopEnv->declareVar(loop->iterator, mkNumber(i), false);
+        try
+        {
+            for (const auto &stmt : loop->body)
+            {
+                try
+                {
+                    last = evaluate(stmt, loopEnv);
+                }
+                catch (const std::runtime_error &e)
+                {
+                    if (std::string(e.what()) == "__EINAH_SKIP__")
+                        break;
+                    else if (std::string(e.what()) == "__EINAH_SHATTER__")
+                        return last;
+                    else
+                        throw;
+                }
+            }
+        }
+        catch (const std::runtime_error &e)
+        {
+            if (std::string(e.what()) == "__EINAH_SHATTER__")
+                return last;
+            else
+                throw;
+        }
+    }
+    return last;
+}
+
+std::shared_ptr<RuntimeVal> evalForEachLoop(std::shared_ptr<ForEachLoop> loop, std::shared_ptr<Environment> env)
+{
+    auto arrVal = evaluate(loop->iterable, env);
+    if (arrVal->_type != ValueType::Array)
+        throw std::runtime_error("For-each loop expects an array as the iterable");
+    auto arr = std::static_pointer_cast<ArrayVal>(arrVal);
+    std::shared_ptr<RuntimeVal> last = mkNull();
+    for (const auto &item : arr->val)
+    {
+        auto loopEnv = std::make_shared<Environment>(env);
+        loopEnv->declareVar(loop->iterator, item, false);
+        try
+        {
+            for (const auto &stmt : loop->body)
+            {
+                try
+                {
+                    last = evaluate(stmt, loopEnv);
+                }
+                catch (const std::runtime_error &e)
+                {
+                    if (std::string(e.what()) == "__EINAH_SKIP__")
+                        break;
+                    else if (std::string(e.what()) == "__EINAH_SHATTER__")
+                        return last;
+                    else
+                        throw;
+                }
+            }
+        }
+        catch (const std::runtime_error &e)
+        {
+            if (std::string(e.what()) == "__EINAH_SHATTER__")
+                return last;
+            else
+                throw;
+        }
+    }
+    return last;
+}
+
 void printValue(const std::shared_ptr<RuntimeVal> &val)
 {
     switch (val->_type)
@@ -184,6 +272,6 @@ void printValue(const std::shared_ptr<RuntimeVal> &val)
         break;
     }
     default:
-        std::cout << "[object]";
+        std::cout << "[unknown]";
     }
 }

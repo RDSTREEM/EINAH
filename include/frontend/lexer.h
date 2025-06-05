@@ -58,7 +58,15 @@ enum class TokenType
     Return,       // 'zipback' return statement
     At,           // '@' for object delimiter
     Caret,        // '^' for the object access
-    FatArrow      // '=>' for object property assignment
+    FatArrow,     // '=>' for object property assignment
+    From,         // 'from' for for-loops
+    To,           // 'to' for for-loops
+    Forever,      // 'forever' for infinite loops
+    Through,      // 'through' for for-each loops
+    Catching,     // 'catching' for for-each loops
+    Cartwheel,    // 'cartwheel' for for-loops
+    Drift,        // 'drift' for for-each loops
+    By            // 'by' for for-loop step
 };
 
 /**
@@ -87,6 +95,14 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"shatter", TokenType::Shatter},
     {"conjure", TokenType::Conjure},
     {"zipback", TokenType::Return},
+    {"from", TokenType::From},
+    {"to", TokenType::To},
+    {"forever", TokenType::Forever},
+    {"through", TokenType::Through},
+    {"catching", TokenType::Catching},
+    {"cartwheel", TokenType::Cartwheel},
+    {"drift", TokenType::Drift},
+    {"by", TokenType::By},
 };
 
 /**
