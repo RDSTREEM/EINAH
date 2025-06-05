@@ -71,11 +71,20 @@ std::shared_ptr<RuntimeVal> evaluateBinaryExpr(std::shared_ptr<BinaryExpr> binop
         return mkBool(false);
     }
 
-    if (rhs && lhs && rhs->_type == ValueType::Number && lhs->_type == ValueType::Number)
+    if (rhs && lhs)
     {
-        auto lhsNum = std::static_pointer_cast<NumberVal>(lhs);
-        auto rhsNum = std::static_pointer_cast<NumberVal>(rhs);
-        return evaluateNumericBinaryExpr(lhsNum, rhsNum, binop->op);
+        if (rhs->_type == ValueType::String && lhs->_type == ValueType::String && binop->op == "+")
+        {
+            auto lhsStr = std::static_pointer_cast<StringVal>(lhs);
+            auto rhsStr = std::static_pointer_cast<StringVal>(rhs);
+            return mkString(lhsStr->val + rhsStr->val);
+        }
+        if (rhs->_type == ValueType::Number && lhs->_type == ValueType::Number)
+        {
+            auto lhsNum = std::static_pointer_cast<NumberVal>(lhs);
+            auto rhsNum = std::static_pointer_cast<NumberVal>(rhs);
+            return evaluateNumericBinaryExpr(lhsNum, rhsNum, binop->op);
+        }
     }
     return mkNull();
 }

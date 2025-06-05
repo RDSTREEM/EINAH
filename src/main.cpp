@@ -6,6 +6,8 @@
 #include <fstream>
 #include <sstream>
 
+#define EINAH_VERSION "v1.0.0"
+
 namespace printHelper
 {
 
@@ -161,18 +163,22 @@ namespace printHelper
 
 void printWelcome()
 {
-    std::cout << "EINAH v0.1\n";
+    std::cout << "EINAH " << EINAH_VERSION << "\n";
     std::cout << "Type 'help' for available commands.\n";
 }
 
 void printHelp()
 {
-    std::cout << "Available commands:\n";
-    std::cout << "  help         Show this help message\n";
-    std::cout << "  clear        Clear the screen\n";
-    std::cout << "  exit, quit   Exit the REPL\n";
-    std::cout << "  #ast         Print the AST for the input\n";
-    std::cout << "  (empty line) Repeat last input\n";
+    std::cout << "Einah Language Interpreter " << EINAH_VERSION << "\n";
+    std::cout << "Usage: einah.exe [options] [file.exn]\n";
+    std::cout << "Options:\n";
+    std::cout << "  --help, -h     Show this help message\n";
+    std::cout << "  --version, -v  Show version info\n";
+    std::cout << "  help           Show REPL help (in REPL)\n";
+    std::cout << "  clear          Clear the screen (in REPL)\n";
+    std::cout << "  exit, quit     Exit the REPL\n";
+    std::cout << "  #ast           Print the AST for the input (in REPL)\n";
+    std::cout << "  (empty line)   Repeat last input (in REPL)\n";
 }
 
 void clearScreen()
@@ -315,7 +321,18 @@ int main(int argc, char const *argv[])
 {
     if (argc > 1)
     {
-        std::string filename = argv[1];
+        std::string arg1 = argv[1];
+        if (arg1 == "--help" || arg1 == "-h")
+        {
+            printHelp();
+            return 0;
+        }
+        if (arg1 == "--version" || arg1 == "-v")
+        {
+            std::cout << "EINAH " << EINAH_VERSION << std::endl;
+            return 0;
+        }
+        std::string filename = arg1;
         if (filename.size() > 4 && filename.substr(filename.size() - 4) == ".exn")
         {
             std::ifstream file(filename);
