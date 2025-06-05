@@ -34,3 +34,8 @@ std::shared_ptr<ObjectVal> mkObject(const std::unordered_map<std::string, std::s
 {
     return std::make_shared<ObjectVal>(val);
 }
+
+std::shared_ptr<NativeFunctionVal> mkNative(const std::string &name, size_t arity, std::function<std::shared_ptr<RuntimeVal>(const std::vector<std::shared_ptr<RuntimeVal>> &)> fn)
+{
+    return std::make_shared<NativeFunctionVal>(name, arity, fn);
+}

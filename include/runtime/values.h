@@ -178,5 +178,13 @@ std::shared_ptr<FunctionVal> mkFunction(const std::vector<std::string> &params, 
  * @return std::shared_ptr<ObjectVal> The created object value.
  */
 std::shared_ptr<ObjectVal> mkObject(const std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> &val);
+/**
+ * @brief Create a new native function value.
+ * @param name The name of the function.
+ * @param arity The number of parameters the function takes.
+ * @param fn The function implementation.
+ * @return std::shared_ptr<NativeFunctionVal> The created native function value.
+ */
+std::shared_ptr<NativeFunctionVal> mkNative(const std::string &name, size_t arity, std::function<std::shared_ptr<RuntimeVal>(const std::vector<std::shared_ptr<RuntimeVal>> &)> fn);
 
 #endif
