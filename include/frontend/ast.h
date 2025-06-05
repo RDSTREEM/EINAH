@@ -27,6 +27,7 @@ enum class NodeType
     Skip,                 // Continue statement
     Shatter,              // Break statement
     ArrayLiteral,         // Array literal node
+    IndexExpr,            // Array index expression node
 };
 
 /**
@@ -153,6 +154,13 @@ struct ArrayLiteral : Expr
 {
     std::vector<std::shared_ptr<Expr>> elements;
     ArrayLiteral(const std::vector<std::shared_ptr<Expr>> &elems) : elements(elems) { kind = NodeType::ArrayLiteral; }
+};
+
+struct IndexExpr : Expr
+{
+    std::shared_ptr<Expr> array;
+    std::shared_ptr<Expr> index;
+    IndexExpr() { kind = NodeType::IndexExpr; }
 };
 
 #endif

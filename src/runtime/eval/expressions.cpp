@@ -178,3 +178,18 @@ std::shared_ptr<RuntimeVal> evalArrayLiteral(std::shared_ptr<ArrayLiteral> arrNo
     }
     return mkArray(elements);
 }
+
+std::shared_ptr<RuntimeVal> evalIndexExpr(std::shared_ptr<IndexExpr> idxExpr, std::shared_ptr<Environment> env)
+{
+    auto arrVal = evaluate(idxExpr->array, env);
+    auto idxVal = evaluate(idxExpr->index, env);
+    if (arrVal->_type != ValueType::Array)
+        throw std::runtime_error("Tried to index a non-array value");
+    if (idxVal->_type != ValueType::Number)
+        throw std::runtime_error("Array index must be a number");
+    auto arr = std::static_pointer_cast<ArrayVal>(arrVal);
+    auto idx = static_cast<size_t>(std::static_pointer_cast<NumberVal>(idxVal)->val);
+    if (idx >= arr->val.size())
+        throw std::runtime_error("Array index out of bounds");
+    return arr->val[idx];
+}

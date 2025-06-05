@@ -196,6 +196,11 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Comma, ","));
             src.erase(src.begin());
         }
+        else if (src.front() == '.')
+        {
+            tokens.push_back(createToken(TokenType::Dot, "."));
+            src.erase(src.begin());
+        }
         else
         {
             std::cerr << "Unreconized character found in source: " << src.front() << std::endl;

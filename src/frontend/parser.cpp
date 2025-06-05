@@ -327,7 +327,7 @@ std::shared_ptr<Expr> Parser::parseAssignmentExpr()
 std::shared_ptr<Expr> Parser::parsePrimaryExpr()
 {
     TokenType tk = at().type;
-
+    std::shared_ptr<Expr> expr;
     switch (tk)
     {
     case TokenType::Identifier:
@@ -335,38 +335,43 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         Token token = eat();
         auto ident = std::make_shared<Identifier>();
         ident->symbol = token.value;
-        return ident;
+        expr = ident;
+        break;
     }
     case TokenType::Number:
     {
         Token token = eat();
         auto num = std::make_shared<NumericLiteral>(std::stod(token.value));
-        return num;
+        expr = num;
+        break;
     }
     case TokenType::Boolean:
     {
         Token token = eat();
         auto boolean = std::make_shared<BooleanLiteral>(token.value == "yup");
-        return boolean;
+        expr = boolean;
+        break;
     }
     case TokenType::Null:
     {
         eat();
         auto null = std::make_shared<NullLiteral>();
-        return null;
+        expr = null;
+        break;
     }
     case TokenType::OpenParen:
     {
         eat();
-        auto value = parseExpr();
+        expr = parseExpr();
         expect(TokenType::CloseParen, "Expected Closing Parenthesis");
-        return value;
+        break;
     }
     case TokenType::String:
     {
         Token token = eat();
         auto str = std::make_shared<StringLiteral>(token.value);
-        return str;
+        expr = str;
+        break;
     }
     case TokenType::Dollar:
     {
@@ -389,13 +394,32 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         }
         expect(TokenType::Dollar, "Expected closing '$' for array literal");
         auto arr = std::make_shared<ArrayLiteral>(elements);
-        return arr;
+        expr = arr;
+        break;
     }
     default:
         std::cerr << "Unexpected token found during parsing: " << at();
         exit(-1);
     }
-    return nullptr;
+    // Handle arr.0 chaining
+    while (at().type == TokenType::Dot)
+    {
+        eat();
+        if (at().type == TokenType::Number)
+        {
+            auto idx = parsePrimaryExpr();
+            auto indexExpr = std::make_shared<IndexExpr>();
+            indexExpr->array = expr;
+            indexExpr->index = idx;
+            expr = indexExpr;
+        }
+        else
+        {
+            std::cerr << "Expected number after dot for array indexing" << std::endl;
+            exit(1);
+        }
+    }
+    return expr;
 }
 
 Token Parser::at()

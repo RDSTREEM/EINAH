@@ -43,6 +43,8 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         throw std::runtime_error("__EINAH_SHATTER__");
     case NodeType::ArrayLiteral:
         return evalArrayLiteral(std::static_pointer_cast<ArrayLiteral>(astNode), env);
+    case NodeType::IndexExpr:
+        return evalIndexExpr(std::static_pointer_cast<IndexExpr>(astNode), env);
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << magic_enum::enum_name(astNode->kind) << std::endl;
         exit(1);

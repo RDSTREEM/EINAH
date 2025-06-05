@@ -52,6 +52,7 @@ enum class TokenType
     Shatter,      // 'shatter' break statement
     Dollar,       // '$' for array literal delimiters
     Comma,        // ',' for separating array elements
+    Dot,          // '.' for property/array access
 };
 
 /**

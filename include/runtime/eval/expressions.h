@@ -71,4 +71,12 @@ std::shared_ptr<RuntimeVal> evalUnaryExpr(std::shared_ptr<UnaryExpr> unaryNode, 
  */
 std::shared_ptr<RuntimeVal> evalArrayLiteral(std::shared_ptr<ArrayLiteral> arrNode, std::shared_ptr<Environment> env);
 
+/**
+ * @brief Evaluate an index expression (array subscript).
+ * @param idxExpr The index expression node.
+ * @param env The environment in which to evaluate.
+ * @return std::shared_ptr<RuntimeVal> The result of the index expression evaluation.
+ */
+std::shared_ptr<RuntimeVal> evalIndexExpr(std::shared_ptr<IndexExpr> idxExpr, std::shared_ptr<Environment> env);
+
 #endif
