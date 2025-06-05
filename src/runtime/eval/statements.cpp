@@ -167,6 +167,22 @@ void printValue(const std::shared_ptr<RuntimeVal> &val)
         std::cout << "]$";
         break;
     }
+    case ValueType::Object:
+    {
+        auto obj = std::static_pointer_cast<ObjectVal>(val);
+        std::cout << "@";
+        bool first = true;
+        for (const auto &pair : obj->val)
+        {
+            if (!first)
+                std::cout << ";";
+            std::cout << pair.first << " => ";
+            printValue(pair.second);
+            first = false;
+        }
+        std::cout << "@";
+        break;
+    }
     default:
         std::cout << "[object]";
     }

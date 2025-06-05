@@ -225,3 +225,47 @@ std::shared_ptr<RuntimeVal> evalCallExpr(std::shared_ptr<CallExpr> call, std::sh
     }
     return last;
 }
+
+std::shared_ptr<RuntimeVal> evalObjectLiteral(std::shared_ptr<ObjectLiteral> objNode, std::shared_ptr<Environment> env)
+{
+    std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> props;
+    for (const auto &pair : objNode->properties)
+    {
+        props[pair.first] = evaluate(pair.second, env);
+    }
+    return mkObject(props);
+}
+
+std::shared_ptr<RuntimeVal> evalObjectAccess(std::shared_ptr<ObjectAccess> accessNode, std::shared_ptr<Environment> env)
+{
+    auto objVal = evaluate(accessNode->object, env);
+    if (objVal->_type != ValueType::Object)
+        throw std::runtime_error("Tried to access a key on a non-object value");
+    auto obj = std::static_pointer_cast<ObjectVal>(objVal);
+
+    std::string key;
+    if (accessNode->key->kind == NodeType::Identifier)
+    {
+        key = std::static_pointer_cast<Identifier>(accessNode->key)->symbol;
+    }
+    else
+    {
+        auto keyVal = evaluate(accessNode->key, env);
+        if (keyVal->_type == ValueType::String)
+        {
+            key = std::static_pointer_cast<StringVal>(keyVal)->val;
+        }
+        else if (keyVal->_type == ValueType::Number)
+        {
+            key = std::to_string(static_cast<int>(std::static_pointer_cast<NumberVal>(keyVal)->val));
+        }
+        else
+        {
+            throw std::runtime_error("Object key must be a string or number");
+        }
+    }
+    auto it = obj->val.find(key);
+    if (it == obj->val.end())
+        throw std::runtime_error("Key not found in object: " + key);
+    return it->second;
+}

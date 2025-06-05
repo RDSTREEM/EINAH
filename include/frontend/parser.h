@@ -142,6 +142,18 @@ private:
      * @return The parsed block.
      */
     std::shared_ptr<Stmt> parseBlockStatement();
+    /**
+     * @brief Parse object literal expressions ({...}).
+     * @return The parsed object literal expression node.
+     */
+    std::shared_ptr<Expr> parseObjectLiteral();
+    /**
+     * @brief Parse object access expressions (obj.prop or obj["prop"]).
+
+     * @param object The object being accessed.
+     * @return The parsed object access expression node.
+     */
+    std::shared_ptr<Expr> parseObjectAccess(std::shared_ptr<Expr> object);
 
 public:
     /**

@@ -87,4 +87,20 @@ std::shared_ptr<RuntimeVal> evalIndexExpr(std::shared_ptr<IndexExpr> idxExpr, st
  */
 std::shared_ptr<RuntimeVal> evalCallExpr(std::shared_ptr<CallExpr> call, std::shared_ptr<Environment> env);
 
+/**
+ * @brief Evaluate an object literal expression.
+ * @param objNode The object literal AST node.
+ * @param env The environment in which to evaluate.
+ * @return std::shared_ptr<RuntimeVal> The resulting object/map value.
+ */
+std::shared_ptr<RuntimeVal> evalObjectLiteral(std::shared_ptr<ObjectLiteral> objNode, std::shared_ptr<Environment> env);
+
+/**
+ * @brief Evaluate an object access expression (member access).
+ * @param accessNode The object access expression node.
+ * @param env The environment in which to evaluate.
+ * @return std::shared_ptr<RuntimeVal> The result of the object access evaluation.
+ */
+std::shared_ptr<RuntimeVal> evalObjectAccess(std::shared_ptr<ObjectAccess> accessNode, std::shared_ptr<Environment> env);
+
 #endif

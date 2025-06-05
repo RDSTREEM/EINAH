@@ -406,25 +406,37 @@ std::shared_ptr<Expr> Parser::parsePrimaryExpr()
         expr = arr;
         break;
     }
+    case TokenType::At:
+    {
+        expr = parseObjectLiteral();
+        break;
+    }
     default:
         std::cerr << "Unexpected token found during parsing: " << at();
         exit(-1);
     }
-    while (at().type == TokenType::Dot)
+    while (at().type == TokenType::Dot || at().type == TokenType::Caret)
     {
-        eat();
-        if (at().type == TokenType::Number)
+        if (at().type == TokenType::Dot)
         {
-            auto idx = parsePrimaryExpr();
-            auto indexExpr = std::make_shared<IndexExpr>();
-            indexExpr->array = expr;
-            indexExpr->index = idx;
-            expr = indexExpr;
+            eat();
+            if (at().type == TokenType::Number)
+            {
+                auto idx = parsePrimaryExpr();
+                auto indexExpr = std::make_shared<IndexExpr>();
+                indexExpr->array = expr;
+                indexExpr->index = idx;
+                expr = indexExpr;
+            }
+            else
+            {
+                std::cerr << "Expected number after dot for array indexing" << std::endl;
+                exit(1);
+            }
         }
-        else
+        else if (at().type == TokenType::Caret)
         {
-            std::cerr << "Expected number after dot for array indexing" << std::endl;
-            exit(1);
+            expr = parseObjectAccess(expr);
         }
     }
     if (at().type == TokenType::Pipe)
@@ -575,4 +587,31 @@ std::shared_ptr<Stmt> Parser::parseBlockStatement()
     }
     expect(TokenType::CloseBracket, "Expected ']' after block");
     return std::make_shared<BlockStatement>(body);
+}
+
+std::shared_ptr<Expr> Parser::parseObjectLiteral()
+{
+    eat();
+    std::vector<std::pair<std::string, std::shared_ptr<Expr>>> properties;
+    while (at().type != TokenType::At)
+    {
+        Token keyToken = expect(TokenType::Identifier, "Expected key in object literal");
+        expect(TokenType::FatArrow, "Expected '=>' after key in object literal");
+        auto value = parseExpr();
+        properties.emplace_back(keyToken.value, value);
+        if (at().type == TokenType::Semicolon)
+            eat();
+    }
+    expect(TokenType::At, "Expected closing '@' for object literal");
+    return std::make_shared<ObjectLiteral>(properties);
+}
+
+std::shared_ptr<Expr> Parser::parseObjectAccess(std::shared_ptr<Expr> object)
+{
+    eat();
+    auto key = parseExpr();
+    auto access = std::make_shared<ObjectAccess>();
+    access->object = object;
+    access->key = key;
+    return access;
 }

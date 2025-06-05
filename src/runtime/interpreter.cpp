@@ -53,6 +53,10 @@ std::shared_ptr<RuntimeVal> evaluate(std::shared_ptr<Stmt> astNode, std::shared_
         throw std::pair<std::string, std::shared_ptr<RuntimeVal>>("__EINAH_RETURN__", evaluate(std::static_pointer_cast<ReturnStatement>(astNode)->argument, env));
     case NodeType::BlockStatement:
         return evaluateBlockStatement(std::static_pointer_cast<BlockStatement>(astNode), env);
+    case NodeType::ObjectLiteral:
+        return evalObjectLiteral(std::static_pointer_cast<ObjectLiteral>(astNode), env);
+    case NodeType::ObjectAccess:
+        return evalObjectAccess(std::static_pointer_cast<ObjectAccess>(astNode), env);
     default:
         std::cerr << "This AST Node has not yet been setup for interpretation: " << magic_enum::enum_name(astNode->kind) << std::endl;
         exit(1);

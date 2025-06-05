@@ -27,6 +27,11 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Arrow, "->"));
             src.erase(src.begin(), src.begin() + 2);
         }
+        else if (src.size() >= 2 && src[0] == '=' && src[1] == '>') // '=>' fat arrow
+        {
+            tokens.push_back(createToken(TokenType::FatArrow, "=>"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
         else if (src.front() == '(')
         {
             tokens.push_back(createToken(TokenType::OpenParen, std::string(1, src.front())));
@@ -204,6 +209,21 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         else if (src.front() == '.')
         {
             tokens.push_back(createToken(TokenType::Dot, "."));
+            src.erase(src.begin());
+        }
+        else if (src.front() == '@')
+        {
+            tokens.push_back(createToken(TokenType::At, "@"));
+            src.erase(src.begin());
+        }
+        else if (src.front() == '^')
+        {
+            tokens.push_back(createToken(TokenType::Caret, "^"));
+            src.erase(src.begin());
+        }
+        else if (src.front() == ';')
+        {
+            tokens.push_back(createToken(TokenType::Semicolon, ";"));
             src.erase(src.begin());
         }
         else

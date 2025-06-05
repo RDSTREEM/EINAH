@@ -32,6 +32,8 @@ enum class NodeType
     CallExpr,             // Function call (name | args~)
     ReturnStatement,      // Return statement (zipback value~)
     BlockStatement,       // Add this line for block node
+    ObjectLiteral,        // Object literal node
+    ObjectAccess,         // Object property access node
 };
 
 /**
@@ -192,6 +194,18 @@ struct BlockStatement : Stmt
 {
     std::vector<std::shared_ptr<Stmt>> body;
     BlockStatement(const std::vector<std::shared_ptr<Stmt>> &b) : body(b) { kind = NodeType::BlockStatement; }
+};
+
+struct ObjectLiteral : Expr
+{
+    std::vector<std::pair<std::string, std::shared_ptr<Expr>>> properties;
+    ObjectLiteral(const std::vector<std::pair<std::string, std::shared_ptr<Expr>>> &props) : properties(props) { kind = NodeType::ObjectLiteral; }
+};
+struct ObjectAccess : Expr
+{
+    std::shared_ptr<Expr> object;
+    std::shared_ptr<Expr> key;
+    ObjectAccess() { kind = NodeType::ObjectAccess; }
 };
 
 #endif

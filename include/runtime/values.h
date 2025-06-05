@@ -4,6 +4,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <unordered_map>
 #include <frontend/ast.h>
 
 class Environment;
@@ -13,12 +14,13 @@ class Environment;
  */
 enum class ValueType
 {
-    Null,    // zip
-    Number,  // numeric
-    Boolean, // yup/nope
-    String,  // string value
-    Array,   // array value
-    Function // function value
+    Null,     // zip
+    Number,   // numeric
+    Boolean,  // yup/nope
+    String,   // string value
+    Array,    // array value
+    Function, // function value
+    Object    // object/map value
 };
 
 /**
@@ -108,6 +110,18 @@ struct FunctionVal : RuntimeVal
 };
 
 /**
+ * @brief Object value (map).
+ */
+struct ObjectVal : RuntimeVal
+{
+    std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> val;
+    ObjectVal(const std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> &v) : val(v)
+    {
+        _type = ValueType::Object;
+    }
+};
+
+/**
  * @brief Create a new number value.
  * @param val The numeric value.
  * @return std::shared_ptr<NumberVal> The created number value.
@@ -144,5 +158,11 @@ std::shared_ptr<ArrayVal> mkArray(const std::vector<std::shared_ptr<RuntimeVal>>
  * @return std::shared_ptr<FunctionVal> The created function value.
  */
 std::shared_ptr<FunctionVal> mkFunction(const std::vector<std::string> &params, const std::vector<std::shared_ptr<Stmt>> &body, std::shared_ptr<Environment> closure);
+/**
+ * @brief Create a new object value.
+ * @param val The object/map elements.
+ * @return std::shared_ptr<ObjectVal> The created object value.
+ */
+std::shared_ptr<ObjectVal> mkObject(const std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> &val);
 
 #endif

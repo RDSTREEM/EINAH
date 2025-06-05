@@ -29,3 +29,8 @@ std::shared_ptr<FunctionVal> mkFunction(const std::vector<std::string> &params, 
 {
     return std::make_shared<FunctionVal>(params, body, closure);
 }
+
+std::shared_ptr<ObjectVal> mkObject(const std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> &val)
+{
+    return std::make_shared<ObjectVal>(val);
+}

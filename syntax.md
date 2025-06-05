@@ -60,11 +60,12 @@
 
 ### 📦 DATA STRUCTURES
 
-| Type             | Syntax Example           | Meaning                         |
-| ---------------- | ------------------------ | ------------------------------- |
-| **Array**        | `$1, 2, 3$`              | Ordered collection              |
-| **Index Access** | `arr.0`                  | Access element at index 0       |
-| **Map**          | `@key => value;@` | Key-value pair collection (map)        |
+| Type              | Syntax Example           | Meaning                             |
+| ----------------_ | ------------------------ | ----------------------------------- |
+| **Array**         | `$1, 2, 3$`              | Ordered collection                  |
+| **Index Access**  | `arr.0`                  | Access element at index 0           |
+| **Object**        | `@key => value;@`        | Key-value pair collection           |
+| **Object Access** | `obj^key`                | Access element at key 0             |
 
 ---
 

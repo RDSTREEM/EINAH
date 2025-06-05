@@ -11,7 +11,7 @@
 enum class TokenType
 {
     Tilde,     // '~' statement terminator (like ';')
-    Semicolon, // unused, for compatibility
+    Semicolon, // ';' for separating object properties
     Identifier,
     Number,
     Equals,       // unused, for compatibility
@@ -56,6 +56,9 @@ enum class TokenType
     Conjure,      // 'conjure' function definition keyword
     Pipe,         // '|' function call operator
     Return,       // 'zipback' return statement
+    At,           // '@' for object delimiter
+    Caret,        // '^' for the object access
+    FatArrow      // '=>' for object property assignment
 };
 
 /**
