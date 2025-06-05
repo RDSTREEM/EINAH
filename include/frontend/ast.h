@@ -30,6 +30,7 @@ enum class NodeType
     IndexExpr,            // Array index expression node
     FunctionDeclaration,  // Named function definition (conjure name <<params>> [ ... ]~)
     CallExpr,             // Function call (name | args~)
+    ReturnStatement,      // Return statement (zipback value~)
 };
 
 /**
@@ -178,6 +179,12 @@ struct CallExpr : Expr
     std::shared_ptr<Expr> callee;
     std::vector<std::shared_ptr<Expr>> arguments;
     CallExpr() { kind = NodeType::CallExpr; }
+};
+
+struct ReturnStatement : Stmt
+{
+    std::shared_ptr<Expr> argument;
+    ReturnStatement() { kind = NodeType::ReturnStatement; }
 };
 
 #endif

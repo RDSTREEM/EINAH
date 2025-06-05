@@ -132,6 +132,11 @@ private:
      * @return The parsed function call expression node.
      */
     std::shared_ptr<Expr> parseCallExpr(std::shared_ptr<Expr> callee);
+    /**
+     * @brief Parse a return statement (zipback ... ~)
+     * @return The parsed return statement node.
+     */
+    std::shared_ptr<Stmt> parseReturnStatement();
 
 public:
     /**

@@ -57,6 +57,9 @@ std::shared_ptr<Stmt> Parser::parseStmt()
     case TokenType::Conjure:
         return parseFunctionDeclaration();
 
+    case TokenType::Return:
+        return parseReturnStatement();
+
     default:
         return parseExprStatement();
     }
@@ -539,4 +542,22 @@ std::shared_ptr<Expr> Parser::parseCallExpr(std::shared_ptr<Expr> callee)
     }
     call->arguments = args;
     return call;
+}
+
+std::shared_ptr<Stmt> Parser::parseReturnStatement()
+{
+    eat();
+    std::shared_ptr<Expr> arg;
+    if (at().type == TokenType::Tilde)
+    {
+        arg = std::make_shared<NullLiteral>();
+    }
+    else
+    {
+        arg = parseExpr();
+    }
+    expect(TokenType::Tilde, "Expected '~' after zipback statement");
+    auto stmt = std::make_shared<ReturnStatement>();
+    stmt->argument = arg;
+    return stmt;
 }

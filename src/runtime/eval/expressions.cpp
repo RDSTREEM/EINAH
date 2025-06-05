@@ -217,12 +217,10 @@ std::shared_ptr<RuntimeVal> evalCallExpr(std::shared_ptr<CallExpr> call, std::sh
             last = evaluate(stmt, funcEnv);
         }
     }
-    catch (const std::runtime_error &e)
+    catch (const std::pair<std::string, std::shared_ptr<RuntimeVal>> &ret)
     {
-        if (std::string(e.what()).rfind("__EINAH_RETURN__", 0) == 0)
-        {
-            return last;
-        }
+        if (ret.first == "__EINAH_RETURN__")
+            return ret.second;
         throw;
     }
     return last;

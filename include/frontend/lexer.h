@@ -55,6 +55,7 @@ enum class TokenType
     Dot,          // '.' for property/array access
     Conjure,      // 'conjure' function definition keyword
     Pipe,         // '|' function call operator
+    Return,       // 'zipback' return statement
 };
 
 /**
@@ -82,6 +83,7 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"skip", TokenType::Skip},
     {"shatter", TokenType::Shatter},
     {"conjure", TokenType::Conjure},
+    {"zipback", TokenType::Return},
 };
 
 /**
