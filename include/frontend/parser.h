@@ -148,12 +148,11 @@ private:
      */
     std::shared_ptr<Expr> parseObjectLiteral();
     /**
-     * @brief Parse object access expressions (obj.prop or obj["prop"]).
-
-     * @param object The object being accessed.
-     * @return The parsed object access expression node.
+     * @brief Parse chained acess (combination of . and ^).
+     * @param expr The expr being accessed.
+     * @return The parsed expr access expression node.
      */
-    std::shared_ptr<Expr> parseObjectAccess(std::shared_ptr<Expr> object);
+    std::shared_ptr<Expr> parseChainedAccess(std::shared_ptr<Expr> expr);
 
 public:
     /**
