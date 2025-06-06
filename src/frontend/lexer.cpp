@@ -17,6 +17,16 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Eq, "~~"));
             src.erase(src.begin(), src.begin() + 2);
         }
+        else if (src.size() >= 2 && src[0] == '!' && src[1] == '~') // '!~' not equal
+        {
+            tokens.push_back(createToken(TokenType::Neq, "!~"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
+        else if (src.size() >= 2 && src[0] == '~' && src[1] == '!') // '~!' not
+        {
+            tokens.push_back(createToken(TokenType::Not, "~!"));
+            src.erase(src.begin(), src.begin() + 2);
+        }
         else if (src.front() == '~') // '~' statement terminator
         {
             tokens.push_back(createToken(TokenType::Tilde, "~"));
@@ -78,16 +88,6 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             tokens.push_back(createToken(TokenType::Percent, "%"));
             src.erase(src.begin());
         }
-        else if (src.size() >= 2 && src[0] == '~' && src[1] == '~')
-        {
-            tokens.push_back(createToken(TokenType::Eq, "~~"));
-            src.erase(src.begin(), src.begin() + 2);
-        }
-        else if (src.size() >= 2 && src[0] == '!' && src[1] == '~')
-        {
-            tokens.push_back(createToken(TokenType::Neq, "!~"));
-            src.erase(src.begin(), src.begin() + 2);
-        }
         else if (src.size() >= 2 && src[0] == '&' && src[1] == '=')
         {
             tokens.push_back(createToken(TokenType::And, "&="));
@@ -96,11 +96,6 @@ std::vector<Token> tokenize(const std::string &sourceCode)
         else if (src.size() >= 2 && src[0] == '|' && src[1] == '=')
         {
             tokens.push_back(createToken(TokenType::Or, "|=")); // logical or operator
-            src.erase(src.begin(), src.begin() + 2);
-        }
-        else if (src.size() >= 2 && src[0] == '~' && src[1] == '!')
-        {
-            tokens.push_back(createToken(TokenType::Not, "~!"));
             src.erase(src.begin(), src.begin() + 2);
         }
         else if (src.size() >= 2 && src[0] == '<' && src[1] == '~')
@@ -175,6 +170,18 @@ std::vector<Token> tokenize(const std::string &sourceCode)
             {
                 ident += src.front();
                 src.erase(src.begin());
+            }
+            if (ident == "hush")
+            {
+                while (!src.empty() && src.front() != '\n')
+                {
+                    src.erase(src.begin());
+                }
+                if (!src.empty() && src.front() == '\n')
+                {
+                    src.erase(src.begin());
+                }
+                continue;
             }
             // Recognize booleans
             if (ident == "yup" || ident == "nope")

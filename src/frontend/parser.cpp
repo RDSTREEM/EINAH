@@ -189,7 +189,7 @@ std::shared_ptr<Expr> Parser::parseExpr()
 std::shared_ptr<Expr> Parser::parseLogicalOrExpr()
 {
     auto left = parseLogicalAndExpr();
-    while (at().type == TokenType::OrKeyword)
+    while (at().type == TokenType::Or)
     {
         eat();
         auto right = parseLogicalAndExpr();
@@ -270,11 +270,10 @@ std::shared_ptr<Expr> Parser::parseNotExpr()
     {
         eat();
         auto expr = parseNotExpr();
-        auto binop = std::make_shared<BinaryExpr>();
-        binop->left = nullptr;
-        binop->right = expr;
-        binop->op = "~!";
-        return binop;
+        auto unop = std::make_shared<UnaryExpr>();
+        unop->op = "~!";
+        unop->argument = expr;
+        return unop;
     }
     return parsePrimaryExpr();
 }
@@ -458,7 +457,9 @@ std::shared_ptr<Expr> Parser::parseChainedAccess(std::shared_ptr<Expr> expr)
             if (at().type == TokenType::Identifier)
             {
                 Token token = eat();
-                keyExpr = std::make_shared<StringLiteral>(token.value);
+                auto ident = std::make_shared<Identifier>();
+                ident->symbol = token.value;
+                keyExpr = ident;
             }
             else if (at().type == TokenType::String)
             {
@@ -519,7 +520,7 @@ std::shared_ptr<Stmt> Parser::parseWhileLoop()
 {
     eat();
     std::shared_ptr<Expr> condition;
-    if (at().type == TokenType::Identifier && at().value == "forever")
+    if (at().type == TokenType::Forever)
     {
         eat();
         condition = std::make_shared<BooleanLiteral>(true);

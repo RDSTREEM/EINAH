@@ -239,7 +239,7 @@ void printValue(const std::shared_ptr<RuntimeVal> &val)
     case ValueType::String:
     {
         auto s = std::static_pointer_cast<StringVal>(val);
-        std::cout << '#' << s->val << '#';
+        std::cout << s->val;
         break;
     }
     case ValueType::Array:

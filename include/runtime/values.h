@@ -29,7 +29,9 @@ enum class ValueType
  */
 struct RuntimeVal
 {
-    ValueType _type; // The type of the runtime value.
+    ValueType _type;
+    RuntimeVal(ValueType t) : _type(t) {}
+    virtual ~RuntimeVal() = default;
 };
 
 /**
@@ -37,10 +39,9 @@ struct RuntimeVal
  */
 struct NullVal : RuntimeVal
 {
-    std::nullptr_t val; // Always nullptr.
-    NullVal()
+    std::nullptr_t val;
+    NullVal() : RuntimeVal(ValueType::Null)
     {
-        _type = ValueType::Null;
         val = nullptr;
     }
 };
@@ -50,11 +51,8 @@ struct NullVal : RuntimeVal
  */
 struct NumberVal : RuntimeVal
 {
-    double val; // The numeric value.
-    NumberVal(double val) : val(val)
-    {
-        _type = ValueType::Number;
-    }
+    double val;
+    NumberVal(double val) : RuntimeVal(ValueType::Number), val(val) {}
 };
 
 /**
@@ -62,11 +60,8 @@ struct NumberVal : RuntimeVal
  */
 struct BooleanVal : RuntimeVal
 {
-    bool val; // The boolean value.
-    BooleanVal(bool val = true) : val(val)
-    {
-        _type = ValueType::Boolean;
-    }
+    bool val;
+    BooleanVal(bool val = true) : RuntimeVal(ValueType::Boolean), val(val) {}
 };
 
 /**
@@ -74,11 +69,8 @@ struct BooleanVal : RuntimeVal
  */
 struct StringVal : RuntimeVal
 {
-    std::string val; // The string value.
-    StringVal(const std::string &v) : val(v)
-    {
-        _type = ValueType::String;
-    }
+    std::string val;
+    StringVal(const std::string &v) : RuntimeVal(ValueType::String), val(v) {}
 };
 
 /**
@@ -86,11 +78,8 @@ struct StringVal : RuntimeVal
  */
 struct ArrayVal : RuntimeVal
 {
-    std::vector<std::shared_ptr<RuntimeVal>> val; // The array elements.
-    ArrayVal(const std::vector<std::shared_ptr<RuntimeVal>> &v) : val(v)
-    {
-        _type = ValueType::Array;
-    }
+    std::vector<std::shared_ptr<RuntimeVal>> val;
+    ArrayVal(const std::vector<std::shared_ptr<RuntimeVal>> &v) : RuntimeVal(ValueType::Array), val(v) {}
 };
 
 /**
@@ -104,10 +93,7 @@ struct FunctionVal : RuntimeVal
     FunctionVal(const std::vector<std::string> &params,
                 const std::vector<std::shared_ptr<Stmt>> &body,
                 std::shared_ptr<Environment> closure)
-        : params(params), body(body), closure(closure)
-    {
-        _type = ValueType::Function;
-    }
+        : RuntimeVal(ValueType::Function), params(params), body(body), closure(closure) {}
 };
 
 /**
@@ -116,10 +102,7 @@ struct FunctionVal : RuntimeVal
 struct ObjectVal : RuntimeVal
 {
     std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> val;
-    ObjectVal(const std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> &v) : val(v)
-    {
-        _type = ValueType::Object;
-    }
+    ObjectVal(const std::unordered_map<std::string, std::shared_ptr<RuntimeVal>> &v) : RuntimeVal(ValueType::Object), val(v) {}
 };
 
 /**
@@ -132,7 +115,7 @@ struct NativeFunctionVal : RuntimeVal
     std::function<std::shared_ptr<RuntimeVal>(const std::vector<std::shared_ptr<RuntimeVal>> &)> fn;
     NativeFunctionVal(const std::string &n, size_t a,
                       std::function<std::shared_ptr<RuntimeVal>(const std::vector<std::shared_ptr<RuntimeVal>> &)> f)
-        : name(n), arity(a), fn(f) { _type = ValueType::Function; }
+        : RuntimeVal(ValueType::Function), name(n), arity(a), fn(f) {}
 };
 
 /**

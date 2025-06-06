@@ -1,4 +1,4 @@
-## 🪄 EINAH v3.1 — Full Functional Core Cheat Sheet
+## 🪄 EINAH v1.0.0 — Full Functional Core Cheat Sheet
 
 ### 🚧 SYNTAX CORE
 

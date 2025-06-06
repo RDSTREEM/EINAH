@@ -66,7 +66,8 @@ enum class TokenType
     Catching,     // 'catching' for for-each loops
     Cartwheel,    // 'cartwheel' for for-loops
     Drift,        // 'drift' for for-each loops
-    By            // 'by' for for-loop step
+    By,           // 'by' for for-loop step
+    Hush          // 'hush' for single-line comments
 };
 
 /**
@@ -103,6 +104,7 @@ const inline std::unordered_map<std::string, TokenType> KEYWORDS = {
     {"cartwheel", TokenType::Cartwheel},
     {"drift", TokenType::Drift},
     {"by", TokenType::By},
+    {"hush", TokenType::Hush}, // for comment keyword completeness
 };
 
 /**
