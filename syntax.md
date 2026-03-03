@@ -1,6 +1,6 @@
 ## 🪄 EINAH v1.0.0 — Full Functional Core Cheat Sheet
 
-### 🚧 SYNTAX CORE
+### SYNTAX CORE
 
 | Category             | Keyword / Symbol | Meaning / Usage                |
 | -------------------- | ---------------- | ------------------------------ |
@@ -15,9 +15,9 @@
 | **Comment**          | `hush`           | Single-line comment            |
 | **Print**            | `spit`           | Output to the console          |
 
----
 
-### 🔁 CONTROL FLOW
+
+### CONTROL FLOW
 
 | Category          | Keyword / Symbol                                 | Meaning / Usage                |
 | ----------------- | ------------------------------------------------ | ------------------------------ |
@@ -29,9 +29,9 @@
 | **For Loop**      | `cartwheel i => 10 ~> 0 by -2 spin  [ ... ]~`    | Standard indexed loop          |
 | **For-Each**      | `drift through arr catching item [ ... ]~`       | Iterate over array or iterable |
 
----
 
-### 🧠 EXPRESSIONS
+
+### EXPRESSIONS
 
 | Category        | Symbol / Literal             | Meaning / Usage      |
 | --------------- | ---------------------------- | -------------------- |
@@ -45,9 +45,9 @@
 | **Arithmetic**  | `+`, `-`, `*`, `/`, `%`, `^` | Math operations      |
 | **Null**        | `zip`                        | Null / None          |
 
----
 
-### 🔡 LITERALS
+
+### LITERALS
 
 | Type        | Syntax Example  | Meaning                          |
 | ----------- | --------------- | -------------------------------- |
@@ -56,20 +56,20 @@
 | **Boolean** | `yup`, `nope`   | True / False                     |
 | **Null**    | `zip`           | Null / None                      |
 
----
 
-### 📦 DATA STRUCTURES
+
+### DATA STRUCTURES
 
 | Type              | Syntax Example           | Meaning                             |
-| ----------------_ | ------------------------ | ----------------------------------- |
+| ----------------- | ------------------------ | ----------------------------------- |
 | **Array**         | `$1, 2, 3$`              | Ordered collection                  |
 | **Index Access**  | `arr.0`                  | Access element at index 0           |
 | **Object**        | `@key => value;@`        | Key-value pair collection           |
 | **Object Access** | `obj^key`                | Access element at key 0             |
 
----
 
-### 🧙‍♂️ FUNCTION STUFF
+
+### FUNCTION STUFF
 
 | Category                  | Syntax                                     | Meaning                    |
 | ------------------------- | ------------------------------------------ | -------------------------- |
